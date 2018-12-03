@@ -1,0 +1,91 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:content => "width=device-width, initial-scale=1, maximum-scale=1.0", :name => "viewport"}/
+    %title Starter Template - Materialize
+    / CSS
+    %link{:href => "/fonts/Material-Icons/material-icons.css", :rel => "stylesheet"}/
+    %link{:href => "/css/main.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
+    %link{:rel=>"apple-touch-icon-precomposed",:href=>"/img/apple-touch-icon-152x152-precomposed.png"}
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  %body
+    %nav.teal{:role => "navigation"}
+      .nav-wrapper.container
+        %a#logo-container.brand-logo{:href => "#"}
+          ER daylog
+          %span.hide-on-med-and-down on
+          %b.hide-on-med-and-down.today= Date.today.strftime('%W, %b %d')
+        %ul.right.hide-on-med-and-down
+          %li.bold
+            %a.dropdown-trigger{"data-target"=>"rooms"} GET MEASUREMENT
+            %ul.dropdown-content#rooms
+              -$mapping.each do |room,systems|
+                %li
+                  %a.waves-effect.waves-teal{:href=>"#"}=room
+        %ul#nav-mobile.sidenav
+          %li
+            %a.teal.white-text{:style=>"padding:0 16px;"}
+              ER daylog /
+              %b.today= Date.today.strftime('%b %d')
+          %li.no-padding
+            %ul.collapsible.collapsible-accordion
+              -$mapping.each do |room,systems|
+                %li.bold
+                  %a.collapsible-header.waves-effect.waves-teal{:tabindex => 0}=room
+                  .collapsible-body
+                    %ul
+                      -systems.each do |system,measurements|
+                        %li
+                          %a.waves-effect.waves-teal{:href=>"#"}=system
+        %a.sidenav-trigger{"data-target" => "nav-mobile", :href => "#"}
+          %i.material-icons menu
+
+    %main
+      =yield
+
+
+
+    %footer.page-footer.orange
+      .container
+        .row
+          .col.l6.s12
+            %h5.white-text Company Bio
+            %p.grey-text.text-lighten-4 We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.
+          .col.l3.s12
+            %h5.white-text Settings
+            %ul
+              %li
+                %a.white-text{:href => "#!"} Link 1
+              %li
+                %a.white-text{:href => "#!"} Link 2
+              %li
+                %a.white-text{:href => "#!"} Link 3
+              %li
+                %a.white-text{:href => "#!"} Link 4
+          .col.l3.s12
+            %h5.white-text Connect
+            %ul
+              %li
+                %a.white-text{:href => "#!"} Link 1
+              %li
+                %a.white-text{:href => "#!"} Link 2
+              %li
+                %a.white-text{:href => "#!"} Link 3
+              %li
+                %a.white-text{:href => "#!"} Link 4
+      .footer-copyright
+        .container
+          Made by
+          %a.orange-text.text-lighten-3{:href => "http://materializecss.com"} Materialize
+    / Scripts
+    %script{:src => "/js/main.js?#{rand(1024)}"}
+    %script{:src => "/js/app.js?#{rand(1024)}", :type=>"text/javascript"}
+    :javascript
+      (function($){ $(function(){ 
+        M.AutoInit();
+      }); })(jQuery);
+

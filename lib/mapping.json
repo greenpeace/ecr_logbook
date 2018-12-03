@@ -1,0 +1,702 @@
+{
+  "Pump & Steering Gear Rooms": {
+    "FO": {
+      "Settling Tank SB 27": {
+        "unit": "cube"
+      },
+      "Settling Tank PS 28": {
+        "unit": "cube"
+      },
+      "Settling Tank PS 29": {
+        "unit": "cube"
+      },
+      "Settling Tank SB 29": {
+        "unit": "cube"
+      }
+    },
+    "Pump Room CPP PT Side": {
+      "Pitch Angle": {
+        "unit": "deg",
+        "min": "0",
+        "max": "25"
+      },
+      "Running Pump #": {
+        "unit": "enum",
+        "min": "1",
+        "max": "2",
+        "notes": "exclusive"
+      },
+      "Pump Del. Pressure": {
+        "unit": "bar"
+      },
+      "LO Pressure": {
+        "unit": "bar"
+      },
+      "SO Pressure": {
+        "unit": "bar"
+      },
+      "OO Pressure": {
+        "unit": "bar"
+      },
+      "Air Pressure Ahead": {
+        "unit": "bar"
+      },
+      "7.5 bar Air Pressure": {
+        "unit": "bar"
+      },
+      "1.5 bar Air Pressure": {
+        "unit": "bar"
+      },
+      "Sump Tank Level": {
+        "unit": "cm"
+      }
+    },
+    "Pump Room CPP SB Side": {
+      "Pitch Angle": {
+        "unit": "deg"
+      },
+      "Running Pump #": {
+        "unit": "enum",
+        "min": "1",
+        "max": "2",
+        "notes": "exclusive"
+      },
+      "Pump Del. Pressure": {
+        "unit": "bar"
+      },
+      "LO Pressure": {
+        "unit": "bar"
+      },
+      "SO Pressure": {
+        "unit": "bar"
+      },
+      "OO Pressure": {
+        "unit": "bar"
+      },
+      "Air Pressure Ahead": {
+        "unit": "bar"
+      },
+      "7.5 bar Air Pressure": {
+        "unit": "bar"
+      },
+      "1.5 bar Air Pressure": {
+        "unit": "bar"
+      },
+      "Sump Tank Level": {
+        "unit": "cm"
+      }
+    },
+    "Shaft": {
+      "Fwd Seal Top Level PS": {
+        "unit": "binary"
+      },
+      "Aft Seal Level PS": {
+        "unit": "cm"
+      },
+      "G11 Pressure Ps": {
+        "unit": "bar"
+      },
+      "G40 Pressure Ps": {
+        "unit": "bar"
+      },
+      "Fwd Seal Top Level Sbd": {
+        "unit": "binary"
+      },
+      "Aft Seal Level Sbd": {
+        "unit": "cm"
+      },
+      "G11 Pressure Sb": {
+        "unit": "bar"
+      },
+      "G40 Pressure Sb": {
+        "unit": "bar"
+      },
+      "Bearing Oil Level PS": {
+        "unit": "binary"
+      },
+      "Bearing Oil Level SB": {
+        "unit": "binary"
+      },
+      "Bearing Oil Flow PS - SB": {
+        "unit": "binary"
+      },
+      "Earthing reading PS": {
+        "unit": "mV"
+      },
+      "Earthing reading SB": {
+        "unit": "mV"
+      }
+    },
+    "Pump room bilge levels": {
+      "PS": {
+        "unit": "binary"
+      },
+      "SB": {
+        "unit": "binary"
+      }
+    },
+    "Steering gear": {
+      "Grease Round Done": {
+        "unit": "binary"
+      },
+      "Pressure Min": {
+        "unit": "bar"
+      },
+      "Pressure Max": {
+        "unit": "bar"
+      },
+      "Tank Level": {
+        "unit": "cm"
+      }
+    }
+  },
+  "AC Room": {
+    "Fresh Water": {
+      "Drinkwater Tank 5 PS": {
+        "unit": "cube"
+      },
+      "Drinkwater Tank 5 SB": {
+        "unit": "cube"
+      }
+    },
+    "Sewage": {
+      "Tank 7": {
+        "unit": "cube"
+      }
+    },
+    "Provision Cooling Plant": {
+      "Compressor Suction Pressure": {
+        "unit": "bar"
+      },
+      "Compressor Delivery Pressure": {
+        "unit": "bar"
+      },
+      "Oil sep level (top)": {
+        "unit": "binary"
+      },
+      "Oil sep level (mid.)": {
+        "unit": "binary"
+      },
+      "Oil Temperature": {
+        "unit": "C"
+      },
+      "Brine Temperature": {
+        "unit": "C"
+      },
+      "Brine Pressure": {
+        "unit": "bar"
+      },
+      "Meat Room Temperature": {
+        "unit": "C"
+      },
+      "Fish Room Temperature": {
+        "unit": "C"
+      },
+      "Vege. Room Temperature": {
+        "unit": "C"
+      },
+      "Dairy Temperature": {
+        "unit": "C"
+      },
+      "Lobby Temperature": {
+        "unit": "C"
+      }
+    },
+    "Air Conditioning": {
+      "Suction Pressure": {
+        "unit": "bar"
+      },
+      "Delivery Pressure": {
+        "unit": "bar"
+      },
+      "Condenser pressure": {
+        "unit": "bar"
+      },
+      "Condenser level": {
+        "unit": "binary"
+      },
+      "Chilled water pressure": {
+        "unit": "bar"
+      },
+      "Oil Separator Level (mid.)": {
+        "unit": "binary"
+      },
+      "Oil Filter Temperature": {
+        "unit": "C"
+      },
+      "Oil Flow": {
+        "unit": "binary"
+      },
+      "Disch Valve Temperature": {
+        "unit": "C"
+      }
+    }
+  },
+  "Main Engine Room": {
+    "Air": {
+      "Running Compressor #": {
+        "unit": "enum",
+        "min": "1",
+        "max": "2",
+        "notes": "exclusive"
+      },
+      "Compressor 1 oil Level": {
+        "unit": "binary"
+      },
+      "Compressor 2 oil Level": {
+        "unit": "binary"
+      },
+      "Start Air Pressure": {
+        "unit": "bar"
+      },
+      "ME Emergency Stops": {
+        "unit": "bar",
+        "opt": "8"
+      },
+      "ME Clutches": {
+        "unit": "bar",
+        "opt": "7"
+      }
+    },
+    "Bilge levels": {
+      "PS": {
+        "unit": "cube"
+      },
+      "SB": {
+        "unit": "cube"
+      }
+    },
+    "Main Engine Port Side": {
+      "Gearbox LO Pressure": {
+        "unit": "bar"
+      },
+      "Gearbox HO Pressure": {
+        "unit": "bar"
+      },
+      "Gearbox LO Level": {
+        "unit": "binary"
+      },
+      "Fuel Rack": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10",
+        "opt": "6"
+      },
+      "Governor oil level": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10"
+      },
+      "CW Pressure": {
+        "unit": "bar"
+      },
+      "CW Inlet Temperature": {
+        "unit": "C"
+      },
+      "CW Outlet Temperature": {
+        "unit": "C"
+      },
+      "LO Pr. Before/After Filter": {
+        "unit": "bar"
+      },
+      "FO Pressure": {
+        "unit": "bar"
+      },
+      "Charge Air Temperature": {
+        "unit": "C"
+      },
+      "Turbo Oil Level": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10"
+      },
+      "LO Sump Level": {
+        "unit": "cm"
+      },
+      "Shaft Bearing Oil Level": {
+        "unit": "scale"
+      },
+      "Shaft Bearing Oil flow": {
+        "unit": "binary"
+      }
+    },
+    "Main Engine Starboard Side": {
+      "Gearbox LO Pressure": {
+        "unit": "bar"
+      },
+      "Gearbox HO Pressure": {
+        "unit": "bar"
+      },
+      "Gearbox LO Level": {
+        "unit": "binary"
+      },
+      "Fuel Rack": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10",
+        "opt": "6"
+      },
+      "Governor oil level": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10"
+      },
+      "CW Pressure": {
+        "unit": "bar"
+      },
+      "CW Inlet Temperature": {
+        "unit": "C"
+      },
+      "CW Outlet Temperature": {
+        "unit": "C"
+      },
+      "LO Pr. Before/After Filter": {
+        "unit": "bar"
+      },
+      "FO Pressure": {
+        "unit": "bar"
+      },
+      "Charge Air Temperature": {
+        "unit": "C"
+      },
+      "Turbo Oil Level": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10"
+      },
+      "LO Sump Level": {
+        "unit": "cm"
+      },
+      "Shaft Bearing Oil Level": {
+        "unit": "scale"
+      },
+      "Shaft Bearing Oil flow": {
+        "unit": "binary"
+      }
+    },
+    "Sea Water": {
+      "Seawater Pump running": {
+        "unit": "binary"
+      },
+      "Seawater Pressure": {
+        "unit": "bar"
+      },
+      "Sea Water Temperature": {
+        "unit": "C"
+      },
+      "PS ME LO Cooler OUT": {
+        "unit": "C"
+      },
+      "PS ME FW Cooler OUT": {
+        "unit": "C"
+      },
+      "SB ME LO Cooler OUT": {
+        "unit": "C"
+      },
+      "SB ME FW Cooler OUT": {
+        "unit": "C"
+      },
+      "Wärtsilä Cooler OUT": {
+        "unit": "C"
+      }
+    },
+    "Evaporator": {
+      "Vacuum": {
+        "unit": "percent"
+      },
+      "Temperature": {
+        "unit": "C"
+      },
+      "Ejector Pressure": {
+        "unit": "bar"
+      },
+      "CW temperature in": {
+        "unit": "C"
+      },
+      "CW temperature out": {
+        "unit": "C"
+      },
+      "Salinity (PPM)": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10"
+      },
+      "Dosing tank level": {
+        "unit": "l",
+        "min": "0",
+        "max": "40"
+      },
+      "Chemical dosage flow": {
+        "unit": "cc/min"
+      }
+    },
+    "Purifiers": {
+      "L.O. Purifier 1 Temperature": {
+        "unit": "C"
+      },
+      "Purifier 1 Oil Level": {
+        "unit": "ml/min"
+      },
+      "L.O. Purifier 2 Temperature": {
+        "unit": "C"
+      },
+      "Purifier 2 Oil Level": {
+        "unit": "ml/min"
+      },
+      "FO. Purifier Oil Level": {
+        "unit": "ml/min"
+      }
+    },
+    "Reverse Osmosis": {
+      "PI 4 Mediafilter IN": {
+        "unit": "bar"
+      },
+      "PI 5 Mediafilter OUT": {
+        "unit": "bar"
+      },
+      "PI 1 Filter 1 IN": {
+        "unit": "bar"
+      },
+      "PI 2 HP Pump B IN": {
+        "unit": "bar"
+      },
+      "Modules OUT": {
+        "unit": "bar"
+      },
+      "Flow": {
+        "unit": "l/min"
+      },
+      "Conductivity": {
+        "unit": "μs/cm"
+      },
+      "Chemical Tank Level": {
+        "unit": "l",
+        "min": "0",
+        "max": "30"
+      }
+    }
+  },
+  "Aux. Engine Room": {
+    "General": {
+      "Engine Room Temperature": {
+        "unit": "C"
+      },
+      "Day Tank SB 27": {
+        "unit": "cube",
+        "min": "0",
+        "max": "4.4"
+      },
+      "Provision Plant S.W. Pressure ": {
+        "unit": "bar"
+      }
+    },
+    "Bilge levels": {
+      "PS": {
+        "unit": "binary"
+      },
+      "SB": {
+        "unit": "binary"
+      }
+    },
+    "Generator": {
+      "Running Generator #": {
+        "unit": "enum",
+        "min": "1",
+        "max": "4",
+        "data": "Wartsila|CAT SB|CAT CL|CAT PS"
+      },
+      "Wartsila Fuel Rack": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10",
+        "data": "Wartsila"
+      },
+      "Wartsila Governor oil": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10",
+        "data": "Wartsila"
+      },
+      "Wartsila Charge Air Pressure": {
+        "unit": "bar",
+        "data": "Wartsila"
+      },
+      "Wartsila Fuel oil pressure": {
+        "unit": "bar",
+        "data": "Wartsila"
+      },
+      "Wartsila LO Level Sump": {
+        "unit": "cm",
+        "data": "Wartsila"
+      },
+      "Wartsila LT CW Temperature": {
+        "unit": "C",
+        "data": "Wartsila"
+      },
+      "Wartsila Charge Air Temperature": {
+        "unit": "C",
+        "data": "Wartsila"
+      },
+      "Wartsila Exp. Tank Level": {
+        "unit": "l",
+        "data": "Wartsila"
+      },
+      "Wartsila Gen. #5 ": {
+        "unit": "A",
+        "data": "Wartsila"
+      },
+      "CAT SB LO Pressure": {
+        "unit": "bar",
+        "data": "CAT SB"
+      },
+      "CAT SB Sump Level ": {
+        "unit": "cm",
+        "data": "CAT SB"
+      },
+      "CAT SB Header tank": {
+        "unit": "l",
+        "data": "CAT SB"
+      },
+      "CAT SB FO Pressure": {
+        "unit": "bar",
+        "data": "CAT SB"
+      },
+      "CAT SB Cooling Water Temperature": {
+        "unit": "C",
+        "data": "CAT SB"
+      },
+      "CAT CL LO Pressure": {
+        "unit": "bar",
+        "data": "CAT CL"
+      },
+      "CAT CL Sump Level ": {
+        "unit": "cm",
+        "data": "CAT CL"
+      },
+      "CAT CL Header tank": {
+        "unit": "l",
+        "data": "CAT CL"
+      },
+      "CAT CL FO Pressure": {
+        "unit": "bar",
+        "data": "CAT CL"
+      },
+      "CAT CL Cooling Water Temperature": {
+        "unit": "C",
+        "data": "CAT CL"
+      },
+      "CAT PS LO Pressure": {
+        "unit": "bar",
+        "data": "CAT PS"
+      },
+      "CAT PS Sump Level ": {
+        "unit": "cm",
+        "data": "CAT PS"
+      },
+      "CAT PS Header tank": {
+        "unit": "l",
+        "data": "CAT PS"
+      },
+      "CAT PS FO Pressure": {
+        "unit": "bar",
+        "data": "CAT PS"
+      },
+      "CAT PS Cooling Water Temperature": {
+        "unit": "C",
+        "data": "CAT PS"
+      }
+    },
+    "Central Heating": {
+      "Temperature IN": {
+        "unit": "C"
+      },
+      "Temperature OUT": {
+        "unit": "C"
+      },
+      "System Pressure": {
+        "unit": "bar"
+      },
+      "Running Boiler #": {
+        "unit": "enum",
+        "min": "1",
+        "max": "3",
+        "notes": "exclusive"
+      },
+      "HR Temperature IN": {
+        "unit": "C"
+      },
+      "HR Temperature OUT": {
+        "unit": "C"
+      }
+    },
+    "Heat Recovery": {
+      "D/G CW IN": {
+        "unit": "C"
+      },
+      "D/G CW OUT": {
+        "unit": "C"
+      },
+      "HR Water IN": {
+        "unit": "C"
+      },
+      "HR Water OUT": {
+        "unit": "C"
+      },
+      "HR Pump Pressure": {
+        "unit": "bar"
+      },
+      "Exp. Tank Level": {
+        "unit": "l"
+      }
+    },
+    "Oily Water Seperator": {
+      "P-1": {
+        "unit": "bar"
+      },
+      "P-2": {
+        "unit": "bar"
+      },
+      "P-3": {
+        "unit": "bar"
+      },
+      "P-4": {
+        "unit": "bar"
+      },
+      "P-5": {
+        "unit": "bar"
+      },
+      "P-6": {
+        "unit": "bar"
+      },
+      "Module 1 ΔP": {
+        "unit": "bar"
+      },
+      "Module 2 ΔP": {
+        "unit": "bar"
+      },
+      "Backpulse p mod 1": {
+        "unit": "bar"
+      },
+      "Backpulse p mod 2": {
+        "unit": "bar"
+      },
+      "Air Pressure": {
+        "unit": "bar"
+      },
+      "Permeate Flow Fl-1": {
+        "unit": "l/min"
+      },
+      "Temperature TI-1": {
+        "unit": "C"
+      },
+      "Feed Pump Frequency": {
+        "unit": "Hz"
+      },
+      "Product PPM": {
+        "unit": "scale",
+        "min": "0",
+        "max": "10"
+      }
+    }
+  }
+}

@@ -1,0 +1,85 @@
+!!! 5
+%html{:lang => "en"}
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:content => "width=device-width, initial-scale=1, maximum-scale=1.0", :name => "viewport"}/
+    %title ER Daylog
+    / CSS
+    %link{:href => "/fonts/Material-Icons/material-icons.css", :rel => "stylesheet"}/
+    %link{:href => "/css/main.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
+    %link{:href => "/css/style.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
+    %link{:rel=>"apple-touch-icon-precomposed",:href=>"/img/apple-touch-icon-152x152-precomposed.png"}
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  %body.amber.lighten-5
+    %nav.teal{:role => "navigation"}
+      .nav-wrapper.container
+        %a#logo-container.brand-logo{:href => "#"}
+          %small.hide-on-large-only.title
+          %span.hide-on-med-and-down ER daylog on
+          %span.hide-on-med-and-down.today= Date.today.strftime('%a, %b %d')
+        %ul.right.hide-on-med-and-down
+          %li.bold
+            %a.dropdown-trigger{"data-target"=>"rooms"} GET MEASUREMENT
+            %ul.dropdown-content#rooms
+              -$mapping.each do |room,systems|
+                %li
+                  %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"##{room.slug}"}=room
+        %ul#nav-mobile.sidenav
+          %li
+            .teal.white-text{:style=>"padding:0 16px;"}
+              ER daylog /
+              %b.today= Date.today.strftime('%a, %b %d')
+          %li.no-padding
+            %ul.collapsible.collapsible-accordion
+              -$mapping.each do |room,systems|
+                %li.bold
+                  %a.collapsible-header.waves-effect.waves-teal{"data-href"=>room.slug}
+                    =room
+                    %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check_circle
+                    %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
+                  .collapsible-body
+                    %ul
+                      -systems.each do |system,measurements|
+                        %li
+                          %a.navlink.waves-effect.waves-teal{:href=>"##{room.slug}/#{system.slug}","data-href"=>"#{room.slug}_#{system.slug}"}
+                            =system
+                            %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check
+                            %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
+        %a.sidenav-trigger{"data-target" => "nav-mobile", :href => "#", :style=>"margin: 0 -2px;"}
+          %i.material-icons menu
+
+    %main{:style=>"display:none;"}
+      .container
+        =yield
+
+
+
+    %footer.page-footer.red.darken-4.hide-on-med-and-down
+      .container
+        .row
+          .col.l6.s12
+          .col.l3.s12
+          .col.l3.s12
+      .footer-copyright
+        .container
+          Made in the 
+          %a.bold.white-text{:href => "http://materializecss.com"} Radio Shack Esperanza
+          TA2LCI
+    / Scripts
+    %script{:src => "/js/main.js?#{rand(1024)}"}
+    %script{:src => "/js/app.js?#{rand(1024)}", :type=>"text/javascript"}
+    :javascript
+      (function($){ $(function(){ 
+        $('.sidenav').sidenav({draggable:true}); 
+        $('.collapsible').collapsible();
+        $('.dropdown-trigger').dropdown({coverTrigger:false});
+        $('select').formSelect();
+        M.AutoInit();
+        $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()).slideDown();
+        init(window.location.hash);
+        checkInputs();
+      }); })(jQuery);
+

@@ -1,0 +1,73 @@
+
+
+%form#daylog{:method=>"post",:action=>"/log"}
+  %section#main
+    %h5 Hello world
+  -$mapping.each do |room,systems|
+    %section{:id=>room.slug}
+      %h5.hide-on-med-and-down= room
+      .row
+        -systems.each do |system,measurements|
+          .col.s12.m6
+            .card{:class=>system.slug,:id=>"#{room.slug}_#{system.slug}"}
+              .card-content
+                .clearfix
+                  %span.left.card-title=system
+                  .right.card-valid
+                    %i.material-icons.teal-text{:style=>"font-size:32px;display:none;"} check_circle
+                -measurements.each do |measurement,specs|
+                  -id = "#{room.slug}_#{system.slug}_#{measurement.slug}"
+                  -dirt = [nil,nil,nil]
+                  -if specs.has_key? "data" 
+                    -if specs["unit"] == "enum"
+                      -dirt = [nil,nil,"dev"]
+                    -else
+                      -dirt = ["display:none;",specs["data"],"devhide "+specs["data"].slug]
+                      -measurement = measurement.sub(/^#{specs["data"]}\s+/,"")
+                  -elsif specs["unit"] == "binary"
+                    -dirt = [nil,nil,"sw"]
+
+                  .input-field{:style=>dirt[0],"data-name"=>dirt[1],:class=>dirt[2]}
+                    -if specs["unit"] == "enum"
+                      %i.material-icons.prefix.grey-text.maybe chevron_right
+                      %i.material-icons.prefix.teal-text.yes check
+                      %i.material-icons.prefix.red-text.text-darken-4.no close
+                      %select{:validate=>true}
+                        %option{:value=>"nil",:disabled=>true,:selected=>true}= measurement
+                        -if specs.has_key? "data"
+                          -specs["data"].split("|").each do |option|
+                            %option{:value=>option.slug}= option
+                        -else
+                          -[*specs["min"].to_i..specs["max"].to_i].each do |option|
+                            %option{:value=>option}= measurement.sub("#",option.to_s)
+                      %label=measurement
+                    -elsif specs["unit"] == "binary"
+                      -#%i.material-icons.prefix.grey-text.maybe chevron_right
+                      %i.material-icons.prefix.teal-text.yes check
+                      %i.material-icons.prefix.teal-text.maybe check
+                      -#%i.material-icons.prefix.red-text.text-darken-4.no close
+                      .clearfix
+                        .left
+                          %label{:for=>id}= measurement
+                        .switch.right
+                          %label
+                            &nbsp; &nbsp; Off
+                            %input{:type=>"checkbox", :name=>id}
+                            %span.lever
+                            On
+                  
+                    -else
+                      %i.material-icons.prefix.grey-text.maybe chevron_right
+                      %i.material-icons.prefix.teal-text.yes check
+                      %i.material-icons.prefix.red-text.text-darken-4.no close
+                      %input{ :id => id,
+                        :type => "number",
+                        :name => id,
+                        :step => ["cube","bar"].include?(specs["unit"]) ? 0.01 : 1,
+                        :min  => specs.has_key?("min") ? specs["min"] : nil,
+                        :max  => specs.has_key?("max") ? specs["max"] : nil,
+                        :required => true,
+                        :validate => true } 
+                      -#,:placeholder=>id}
+                      %label{:for=>id}= measurement
+                  
