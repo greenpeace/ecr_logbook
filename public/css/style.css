@@ -42,6 +42,9 @@
   }
 }
 
+.full { width: 100%; }
+
+.navbar-fixed { z-index: 9999; }
 
 /*body {
   background: #ddd;

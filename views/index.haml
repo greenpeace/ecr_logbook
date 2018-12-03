@@ -3,6 +3,7 @@
 %form#daylog{:method=>"post",:action=>"/log"}
   %section#main
     %h5 Hello world
+  -index = 0
   -$mapping.each do |room,systems|
     %section{:id=>room.slug}
       %h5.hide-on-med-and-down= room
@@ -32,7 +33,7 @@
                       %i.material-icons.prefix.grey-text.maybe chevron_right
                       %i.material-icons.prefix.teal-text.yes check
                       %i.material-icons.prefix.red-text.text-darken-4.no close
-                      %select{:validate=>true}
+                      %select{:validate=>true,:name=>id}
                         %option{:value=>"nil",:disabled=>true,:selected=>true}= measurement
                         -if specs.has_key? "data"
                           -specs["data"].split("|").each do |option|
@@ -45,6 +46,7 @@
                       -#%i.material-icons.prefix.grey-text.maybe chevron_right
                       %i.material-icons.prefix.teal-text.yes check
                       %i.material-icons.prefix.teal-text.maybe check
+                      %input.checkhide{:type=>"hidden", :name=>id, :value=>"off"}
                       -#%i.material-icons.prefix.red-text.text-darken-4.no close
                       .clearfix
                         .left
@@ -52,7 +54,7 @@
                         .switch.right
                           %label
                             &nbsp; &nbsp; Off
-                            %input{:type=>"checkbox", :name=>id}
+                            %input.check{:type=>"checkbox", :name=>id}
                             %span.lever
                             On
                   
@@ -71,3 +73,49 @@
                       -#,:placeholder=>id}
                       %label{:for=>id}= measurement
                   
+      .row
+        .col.s12.foot-arrows
+          %br/
+          -if index > 0
+            .left
+              %a.btn-large.btn-floating.waves-effect.waves-light{:href=>"##{$mapping.keys[index-1].slug}"}
+                %i.material-icons chevron_left
+          -if index < $mapping.keys.length - 1
+            .right
+              %a.btn-large.btn-floating.waves-effect.waves-light{:href=>"##{$mapping.keys[index+1].slug}"}
+                %i.material-icons chevron_right
+          -else
+            .right
+              %a.btn-large.btn-floating.waves-effect.waves-light{:href=>"#submit"}
+                %i.material-icons send
+          %br/
+          %br/
+          %br/
+
+    -index += 1
+
+  %section#submit
+    %h5.hide-on-med-and-down Submit results
+    .row
+      .col.s12
+        .card
+          .card-content
+            .row
+              .col.s12
+                .clearfix
+                  %span.left.card-title Submit
+                  -#.right.card-valid
+                    %i.material-icons.teal-text{:style=>"font-size:32px;display:none;"} check_circle
+              .col.s12.m6
+                .input-field
+                  %input.datepicker{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>Date.today.strftime("%b %d, %Y")}
+                  %label{:for=>"date"} Date
+              .col.s12.m6
+                .input-field
+                  %input{:validate=>true,:required=>true,:name=>"user",:type=>"text"}
+                  %label{:for=>"date"} Engineer name
+              .col.s8.offset-s2.m6.offset-m3
+                .input-field
+                  %button.btn.full.submit.large
+                    %i.material-icons.right.large send
+                    .large SEND FORM

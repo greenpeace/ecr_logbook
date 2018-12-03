@@ -14,42 +14,46 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   %body.amber.lighten-5
-    %nav.teal{:role => "navigation"}
-      .nav-wrapper.container
-        %a#logo-container.brand-logo{:href => "#"}
-          %small.hide-on-large-only.title
-          %span.hide-on-med-and-down ER daylog on
-          %span.hide-on-med-and-down.today= Date.today.strftime('%a, %b %d')
-        %ul.right.hide-on-med-and-down
-          %li.bold
-            %a.dropdown-trigger{"data-target"=>"rooms"} GET MEASUREMENT
-            %ul.dropdown-content#rooms
-              -$mapping.each do |room,systems|
-                %li
-                  %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"##{room.slug}"}=room
-        %ul#nav-mobile.sidenav
-          %li
-            .teal.white-text{:style=>"padding:0 16px;"}
-              ER daylog /
-              %b.today= Date.today.strftime('%a, %b %d')
-          %li.no-padding
-            %ul.collapsible.collapsible-accordion
-              -$mapping.each do |room,systems|
+    .navbar-fixed
+      %nav.teal{:role => "navigation"}
+        .nav-wrapper.container
+          %a#logo-container.brand-logo{:href => "#"}
+            %small.hide-on-large-only.title
+            %span.hide-on-med-and-down ER daylog on
+            %span.hide-on-med-and-down.today= Date.today.strftime('%a, %b %d')
+          %ul.right.hide-on-med-and-down
+            %li.bold
+              %a.dropdown-trigger{"data-target"=>"rooms"} GET MEASUREMENT
+              %ul.dropdown-content#rooms
+                -$mapping.each do |room,systems|
+                  %li
+                    %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"##{room.slug}"}=room
+          %ul#nav-mobile.sidenav
+            %li
+              .teal.white-text{:style=>"padding:0 16px;"}
+                ER daylog /
+                %span.today= Date.today.strftime('%a, %b %d')
+            %li.no-padding
+              %ul.collapsible.collapsible-accordion
+                -$mapping.each do |room,systems|
+                  %li.bold
+                    %a.collapsible-header.waves-effect.waves-teal{"data-href"=>room.slug}
+                      =room
+                      %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check_circle
+                      %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
+                    .collapsible-body
+                      %ul
+                        -systems.each do |system,measurements|
+                          %li
+                            %a.navlink.waves-effect.waves-teal{:href=>"##{room.slug}/#{system.slug}","data-href"=>"#{room.slug}_#{system.slug}"}
+                              =system
+                              %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check
+                              %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
                 %li.bold
-                  %a.collapsible-header.waves-effect.waves-teal{"data-href"=>room.slug}
-                    =room
-                    %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check_circle
-                    %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
-                  .collapsible-body
-                    %ul
-                      -systems.each do |system,measurements|
-                        %li
-                          %a.navlink.waves-effect.waves-teal{:href=>"##{room.slug}/#{system.slug}","data-href"=>"#{room.slug}_#{system.slug}"}
-                            =system
-                            %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check
-                            %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
-        %a.sidenav-trigger{"data-target" => "nav-mobile", :href => "#", :style=>"margin: 0 -2px;"}
-          %i.material-icons menu
+                  %a.navlink.waves-effect.waves-teal{:href=>"#submit","data-href"=>"#submit",:style=>"padding-left:52px;"} 
+                    Submit
+          %a.sidenav-trigger{"data-target" => "nav-mobile", :href => "#", :style=>"margin: 0 -2px;"}
+            %i.material-icons menu
 
     %main{:style=>"display:none;"}
       .container
@@ -78,8 +82,10 @@
         $('.dropdown-trigger').dropdown({coverTrigger:false});
         $('select').formSelect();
         M.AutoInit();
+        $(".input-field.devhide input").prop("required",false);
+        $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()+" input").prop("required",true)
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()).slideDown();
-        init(window.location.hash);
         checkInputs();
+        init(window.location.hash);
       }); })(jQuery);
 

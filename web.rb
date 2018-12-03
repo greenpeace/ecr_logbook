@@ -17,6 +17,10 @@ get "/?" do
   haml :index
 end
 
+post "/log/?" do 
+  JSON.pretty_generate(parse params).gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
+end
+
 not_found do 
   redirect to "/"
 end
@@ -33,3 +37,17 @@ $title = $sitename
 $domain = "//daylog.myez.gl3"
 $description = ""
 
+def parse pa
+  re = {}
+  pa.each do |k,v|
+    if ["date","user"].include? k
+      re[k] = v
+    else
+      ro, sy, me = *k.split("_")
+      re[ro] = {} unless re.has_key?(ro)
+      re[ro][sy] = {} unless re[ro].has_key?(sy)
+      re[ro][sy][me] = v
+    end
+  end
+  re
+end
