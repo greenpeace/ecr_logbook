@@ -23,11 +23,13 @@
             %span.hide-on-med-and-down.today= Date.today.strftime('%a, %b %d')
           %ul.right.hide-on-med-and-down
             %li.bold
-              %a.dropdown-trigger{"data-target"=>"rooms"} GET MEASUREMENT
+              %a.dropdown-trigger{"data-target"=>"rooms"} SYSTEMS
               %ul.dropdown-content#rooms
                 -$mapping.each do |room,systems|
                   %li
                     %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"##{room.slug}"}=room
+                %li
+                  %a.navlink.waves-effect.waves-teal.tab{"data-href"=>"#submit",:href=>"#submit"} Submit
           %ul#nav-mobile.sidenav
             %li
               .teal.white-text{:style=>"padding:0 16px;"}

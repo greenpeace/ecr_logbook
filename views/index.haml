@@ -108,12 +108,23 @@
                     %i.material-icons.teal-text{:style=>"font-size:32px;display:none;"} check_circle
               .col.s12.m6
                 .input-field
-                  %input.datepicker{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>Date.today.strftime("%b %d, %Y")}
+                  %input.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>Date.today.strftime("%b %d, %Y")}
                   %label{:for=>"date"} Date
               .col.s12.m6
                 .input-field
-                  %input{:validate=>true,:required=>true,:name=>"user",:type=>"text"}
-                  %label{:for=>"date"} Engineer name
+                  %input.ex{:validate=>true,:required=>true,:name=>"user",:type=>"text"}
+                  %label{:for=>"date"} Duty engineer
+              .col.s12
+                .input-field
+                  %textarea.materialize-textarea{:name=>"notes",:rows=>5}
+                  %label{:for=>"notes"} Notes
+              .col.s12.errors
+                .card.red.darken-4
+                  .card-content
+                    .clearfix
+                      %span.left.title.white-text Following problems encountered:
+                    %ul.content
+
               .col.s8.offset-s2.m6.offset-m3
                 .input-field
                   %button.btn.full.submit.large

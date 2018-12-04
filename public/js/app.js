@@ -1,8 +1,7 @@
 
 function init(element) {
-  console.log(element)
   if(typeof element == "undefined" || element == "#" || element == "") element = "#main"
-  console.log(element)
+  //console.log(element)
   section = element.split(/\//)[0]
   card = element.split(/\//)[1]
   $("nav small.title").text($("#rooms > li > a[data-href="+section.substr(1)+"]").text())
@@ -11,16 +10,18 @@ function init(element) {
   $("main").show();
   M.updateTextFields();
   if(typeof card != "undefined") {
-    console.log(card)
     $(document).scrollTop( $(".card."+card).offset().top - 56 );
   }
+  if (element.split(/\//).length == 3 ) {
+    $(element.split(/\//).join("_")).focus();
+  } 
 }
 
 $(".foot-arrows a").on("click",function(){
   init($(this).attr("href"));
 })
 
-$("a.navlink").on("click",function(){
+$("body").on("click","a.navlink",function(){
   init($(this).attr("href"))
   if($(this).closest("#nav-mobile").length > 0) $("#nav-mobile").sidenav("close");
 })
@@ -35,7 +36,36 @@ $("form#daylog .input-field.dev select").on("change",function(){
 
 // Validations
 
-$("form#daylog .input-field input[type=number]").on("blur",function(){
+$("form#daylog button.submit").off("click tap").on("click tap",function(){
+  if (validateForm()) {
+    $("form#daylog").submit();
+  } else {
+    $(".errors").slideDown();
+  }
+})
+
+function validateForm(){
+  $(".errors").slideUp();
+  $(".errors .content").html("");
+  err = 0
+  $.each($("form#daylog input").not(".valid"),function(i,e){
+    if (typeof $(e).attr("name") !== "undefined" && $(e).attr("type") !== "hidden" && $(e).attr("type") !== "checkbox") {
+      err ++;
+      addr = $(e).attr("name").split("_");
+      if (addr.length == 1 ) {
+        href = "#submit";
+        txt = "<b>"+$(e).next("label").text() + "</b> (just above)";
+      } else {
+        href = "#"+ addr.join("/");
+        txt = "<b>"+$(e).next("label").text() + "</b> (" + $(e).closest("section").find("h5").text() + " / " + $(e).closest(".card").find(".card-title").text() + ")";
+      }
+      $(".errors .card .content").append("<li><a class='white-text navlink' href='"+href+"'>"+txt+"</a></li>")
+    }
+  })
+  return err == 0
+}
+
+$("form#daylog .input-field input[type=number], input.ex").on("blur",function(){
   checkNumber(this);
   checkSystem($(this).closest(".card"));
 })
@@ -66,7 +96,7 @@ function checkRoom(room) {
 function checkSystem(card) {
   total = card.find("input:required[type=number], select").length;
   valid = card.find("input.valid:required[type=number]").length + card.find("ul.select-dropdown li.selected").not("ul.select-dropdown li.disabled").length;
-  console.log(card.attr("id")+": "+valid+" / "+total)
+  //console.log(card.attr("id")+": "+valid+" / "+total)
   if (valid < total) {
     card.find(".card-valid i").fadeOut();
     card.attr("data-valid","false")
@@ -121,7 +151,7 @@ function checkSelect(input) {
 
 function checkInputs() {
   $.each($("form#daylog .input-field select"),function(i,e){ checkSelect(e); })
-  $.each($("form#daylog .input-field input[type=number]"),function(i,e){ checkNumber(e); })
+  $.each($("form#daylog .input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
   $.each($("form#daylog .input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
   $.each($("form#daylog .card"),function(i,e){ checkSystem($(e)); })
   $.each($("form#daylog section.room"),function(i,e){ checkRoom($(e)); })

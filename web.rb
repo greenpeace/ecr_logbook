@@ -18,7 +18,9 @@ get "/?" do
 end
 
 post "/log/?" do 
-  JSON.pretty_generate(parse params).gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
+  File.open("#{Dir.pwd}/public/output/#{Date.strptime(params["date"],"%b %d, %Y").strftime("%Y%m%d")}-engine_log.json","w") do |file|
+    file << JSON.pretty_generate(parse params) #.gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
+  end
 end
 
 not_found do 
