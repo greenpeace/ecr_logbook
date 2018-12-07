@@ -11,6 +11,8 @@ function init(element) {
   M.updateTextFields();
   if(typeof card != "undefined") {
     $(document).scrollTop( $(".card."+card).offset().top - 56 );
+  } else {
+    $(document).scrollTop(0);
   }
   if (element.split(/\//).length == 3 ) {
     $(element.split(/\//).join("_")).focus();
@@ -31,6 +33,7 @@ $("form#daylog .input-field.dev select").on("change",function(){
   $(this).closest(".dev").nextAll(".input-field.devhide input").prop("required", false);
   $(this).closest(".dev").nextAll(".input-field.devhide."+$(this).find("option:selected").val()).slideDown();
   $(this).closest(".dev").nextAll(".input-field.devhide."+$(this).find("option:selected").val()).find("input").prop("required", true);
+  $.each($(this).closest(".dev").nextAll(".input-field.devhide."+$(this).find("option:selected").val()).find("input"),function(i,e){ checkNumber(e); })
 })
 
 

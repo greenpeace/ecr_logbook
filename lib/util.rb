@@ -1,6 +1,6 @@
 class String
   def slug
-    self.strip.to_ascii.downcase.gsub(/('|\([^\)]+\))+/,"").gsub(/\W+/,"-").sub(/(\s|,)+$/,"").gsub(/(^-|-$)/,"")
+    self.strip.to_ascii.downcase.gsub(/'+/,"").gsub(/\W+/,"-").sub(/(\s|,)+$/,"").gsub(/(^-|-$)/,"")
   end
   def abbr
     self.strip.to_ascii.downcase.gsub(/('|\([^\)]+\))+/,"").gsub(/\W+/,"-").sub(/(\s|,)+$/,"").gsub(/(^-|-$)/,"")

@@ -18,18 +18,17 @@
       %nav.teal{:role => "navigation"}
         .nav-wrapper.container
           %a#logo-container.brand-logo{:href => "#"}
-            %small.hide-on-large-only.title
-            %span.hide-on-med-and-down ER daylog on
-            %span.hide-on-med-and-down.today= Date.today.strftime('%a, %b %d')
+            %span.hide-on-med-and-down Engine Room Daylog &nbsp;
+            %small.title
           %ul.right.hide-on-med-and-down
             %li.bold
-              %a.dropdown-trigger{"data-target"=>"rooms"} SYSTEMS
+              %a.dropdown-trigger{"data-target"=>"rooms"} SELECT ROOM
               %ul.dropdown-content#rooms
                 -$mapping.each do |room,systems|
                   %li
                     %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"##{room.slug}"}=room
                 %li
-                  %a.navlink.waves-effect.waves-teal.tab{"data-href"=>"#submit",:href=>"#submit"} Submit
+                  %a.navlink.waves-effect.waves-teal.tab{"data-href"=>"submit",:href=>"#submit"} Submit
           %ul#nav-mobile.sidenav
             %li
               .teal.white-text{:style=>"padding:0 16px;"}
@@ -63,7 +62,7 @@
 
 
 
-    %footer.page-footer.red.darken-4.hide-on-med-and-down
+    %footer.page-footer.red.darken-4.hide-on-med-and-down{:style=>"display:none;"}
       .container
         .row
           .col.l6.s12
@@ -73,21 +72,23 @@
         .container
           Made in the 
           %a.bold.white-text{:href => "http://materializecss.com"} Radio Shack Esperanza
-          TA2LCI
+          -#TA2LCI
+          .right= Date.today.strftime('%a, %b %d')
     / Scripts
     %script{:src => "/js/main.js?#{rand(1024)}"}
     %script{:src => "/js/app.js?#{rand(1024)}", :type=>"text/javascript"}
     :javascript
       (function($){ $(function(){ 
+        M.AutoInit();
         $('.sidenav').sidenav({draggable:true}); 
         $('.collapsible').collapsible();
-        $('.dropdown-trigger').dropdown({coverTrigger:false});
+        $('.dropdown-trigger').dropdown({alignment:'right',constrainWidth:false,coverTrigger:false});
         $('select').formSelect();
-        M.AutoInit();
         $(".input-field.devhide input").prop("required",false);
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()+" input").prop("required",true)
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()).slideDown();
         checkInputs();
         init(window.location.hash);
+        $("footer").slideDown();
       }); })(jQuery);
 

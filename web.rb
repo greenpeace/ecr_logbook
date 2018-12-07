@@ -2,7 +2,6 @@
 
 require 'sinatra'
 require 'sinatra/content_for'
-require 'unicode_utils'
 require 'unidecoder'
 require 'json'
 require 'haml'
@@ -17,10 +16,15 @@ get "/?" do
   haml :index
 end
 
+get "/thanks/?" do 
+  haml :thanks
+end
+
 post "/log/?" do 
   File.open("#{Dir.pwd}/public/output/#{Date.strptime(params["date"],"%b %d, %Y").strftime("%Y%m%d")}-engine_log.json","w") do |file|
     file << JSON.pretty_generate(parse params) #.gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
   end
+  return redirect to :thanks
 end
 
 not_found do 
@@ -44,6 +48,8 @@ def parse pa
   pa.each do |k,v|
     if ["date","user"].include? k
       re[k] = v
+    elsif ["notes"].include? k
+      re[k] = " \n#{v}"
     else
       ro, sy, me = *k.split("_")
       re[ro] = {} unless re.has_key?(ro)

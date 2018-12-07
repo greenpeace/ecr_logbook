@@ -2,11 +2,11 @@
 
 %form#daylog{:method=>"post",:action=>"/log"}
   %section#main
-    %h5 Hello world
+    -#%h5 Hello world
   -index = 0
   -$mapping.each do |room,systems|
     %section{:id=>room.slug}
-      %h5.hide-on-med-and-down= room
+      -#%h5.hide-on-med-and-down= room
       .row
         -systems.each do |system,measurements|
           .col.s12.m6
@@ -116,7 +116,7 @@
                   %label{:for=>"date"} Duty engineer
               .col.s12
                 .input-field
-                  %textarea.materialize-textarea{:name=>"notes",:rows=>5}
+                  %textarea.materialize-textarea{:name=>"notes"}
                   %label{:for=>"notes"} Notes
               .col.s12.errors
                 .card.red.darken-4
