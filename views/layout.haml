@@ -21,6 +21,9 @@
             %span.hide-on-med-and-down Engine Room Daylog &nbsp;
             %small.title
           %ul.right.hide-on-med-and-down
+            -if request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+              %li.bold
+                %a{:href=>"/admin","data-target"=>"admin"} ADMIN
             %li.bold
               %a.dropdown-trigger{"data-target"=>"rooms"} SELECT ROOM
               %ul.dropdown-content#rooms
@@ -48,7 +51,7 @@
                           %li
                             %a.navlink.waves-effect.waves-teal{:href=>"##{room.slug}/#{system.slug}","data-href"=>"#{room.slug}_#{system.slug}"}
                               =system
-                              %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check
+                              %i.material-icons.prefix.grey-text.yes{:style=>"margin-right:12px;display:none;"} check
                               %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
                 %li.bold
                   %a.navlink.waves-effect.waves-teal{:href=>"#submit","data-href"=>"#submit",:style=>"padding-left:52px;"} 
@@ -77,13 +80,16 @@
     / Scripts
     %script{:src => "/js/main.js?#{rand(1024)}"}
     %script{:src => "/js/app.js?#{rand(1024)}", :type=>"text/javascript"}
+    =yield_content :body_end
     :javascript
       (function($){ $(function(){ 
-        M.AutoInit();
+
+        //M.AutoInit();
         $('.sidenav').sidenav({draggable:true}); 
         $('.collapsible').collapsible();
         $('.dropdown-trigger').dropdown({alignment:'right',constrainWidth:false,coverTrigger:false});
         $('select').formSelect();
+
         $(".input-field.devhide input").prop("required",false);
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()+" input").prop("required",true)
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()).slideDown();

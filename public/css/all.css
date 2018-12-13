@@ -6456,6 +6456,104 @@ input[type=range]::-ms-thumb {
     bottom: auto;
     text-align: center;
     margin-top: 1.2rem; } }
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+textarea, input[type=text] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.clearfix {
+  overflow: auto;
+}
+
+.clearfix:before, .clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.material-icons.prefix.yes, .material-icons.prefix.no {
+  display:none;
+}
+
+.input-field.sw {
+  margin: -6px 0;
+}
+
+.input-field i.prefix {
+  margin: 8px 0 0;
+}
+
+.switch {
+  padding:18px 0;
+}
+
+.switch.sys {
+  margin: 4px -20px;
+  padding: 0;
+}
+
+.card-action.off{
+  display:none;
+}
+
+.card-valid {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  max-height: 40px;
+}
+
+.card-valid i {
+  margin: 0 10px 0 -2px;
+}
+
+.card-content > .clearfix {
+  overflow: visible;
+}
+
+.card.lubrication .right i {
+  font-size: 48px !important;
+  line-height: 32px;
+  cursor: pointer;
+}
+
+
+.input-field.sw .left label {
+  font-size: 1rem;
+  line-height:56px;
+  margin-left: 40px;
+  color: #000;
+}
+
+.input-field > label {
+  color: #000;
+}
+
+@media only screen and (max-width: 992px) {
+  nav .brand-logo {
+    top: -4px;
+    left: 32px;
+    transform: none;
+  }
+}
+
+.full { width: 100%; }
+
+.navbar-fixed { z-index: 9999; }
+
+.errors { display:none; }
+
+.bold { font-weight: bold; }
+
 
 /*body {
   background: #ddd;

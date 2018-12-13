@@ -9,13 +9,20 @@
       -#%h5.hide-on-med-and-down= room
       .row
         -systems.each do |system,measurements|
-          .col.s12.m6
+          .col.s12.m6.offset-m3
             .card{:class=>system.slug,:id=>"#{room.slug}_#{system.slug}"}
               .card-content
                 .clearfix
-                  %span.left.card-title=system
-                  .right.card-valid
-                    %i.material-icons.teal-text{:style=>"font-size:32px;display:none;"} check_circle
+                  .left.card-valid
+                    %i.prefix.material-icons.grey-text{:style=>"font-size:32px;display:none;"} check_circle
+                    &nbsp;
+                  .left
+                    %span.card-title=system
+                  .switch.right.sys
+                    %label
+                      %input.check{:type=>"checkbox", :name=>"#{room.slug}_#{system.slug}"}
+                      %span.lever
+              .card-action.off
                 -measurements.each do |measurement,specs|
                   -id = "#{room.slug}_#{system.slug}_#{measurement.slug}"
                   -dirt = [nil,nil,nil]
@@ -68,11 +75,26 @@
                         :step => ["cube","bar"].include?(specs["unit"]) ? 0.01 : 1,
                         :min  => specs.has_key?("min") ? specs["min"] : nil,
                         :max  => specs.has_key?("max") ? specs["max"] : nil,
-                        :required => true,
+                        #:required => true,
                         :validate => true } 
                       -#,:placeholder=>id}
                       %label{:for=>id}= measurement
-                  
+
+        -if $lubrication.has_key?(room)
+          .col.s12.m6.offset-m3
+            .card.lubrication{:id=>"#{room.slug}_lubrication"}
+              .card-content
+                .clearfix
+                  .left.card-valid
+                    &nbsp;
+                  .left
+                    %i.card-valid.prefix.material-icons.teal-text.large{:style=>"font-size:32px;display:none;"} check_circle
+                    %span.card-title Lubrication
+                  .right
+                    %a.lube-add
+                      %i.card-valid.prefix.material-icons.teal-text{:style=>"font-size:32px;"} add_circle
+              .card-action.off
+                    
       .row
         .col.s12.foot-arrows
           %br/

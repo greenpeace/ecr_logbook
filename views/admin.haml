@@ -1,0 +1,120 @@
+%section#admin
+  .row
+    .col.s12.m8.offset-m2
+
+      .card.output#output
+        .card-content
+          .clearfix
+            .left
+              %span.card-title Download log sheet
+          %form.download{:method=>"post",:action=>"/download_log_sheet"}
+            .row
+              .col.s8.m10
+                .input-field
+                  %input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>"",:placeholder=>"Pick a date here"}
+                  %label{:for=>"date"} Date
+              .col.s4.m2
+                .input-field
+                  %button.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                    %i.material-icons file_download
+
+      .card.layout#layout
+        .card-content
+          .clearfix
+            .left
+              %span.card-title Upload layout
+            .right
+              %a{:href=>"/current_layout",:style=>"font-size:16px;line-height:38px;"} Download current layout
+          %form.upload#layout{:enctype=>"multipart/form-data",:method=>"post",:action=>"/update_layout"}
+            .row
+              .col.s8.m10
+                .input-field.file-field
+                  .btn
+                    %span FILE
+                    %input.file{:type=>"file",:name=>"layout_file"}
+                  .file-path-wrapper
+                    %input.file-path.validate{:type=>"text",:placeholder=>"Upload your layout.csv here!"}
+              .col.s4.m2
+                .input-field
+                  %button.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                    %i.material-icons file_upload
+
+      .card.mapping#mapping
+        .card-content
+          .clearfix
+            .left
+              %span.card-title Upload mapping
+            .right
+              %a{:href=>"/current_mapping",:style=>"font-size:16px;line-height:38px;"} Download current mapping
+          %form.upload#mapping{:enctype=>"multipart/form-data",:method=>"post",:action=>"/update_mapping"}
+            .row
+              .col.s8.m10
+                .input-field.file-field
+                  .btn
+                    %span FILE
+                    %input.file{:type=>"file",:name=>"mapping_file"}
+                  .file-path-wrapper
+                    %input.file-path.validate{:type=>"text",:placeholder=>"Upload your mapping.csv here!"}
+              .col.s4.m2
+                .input-field
+                  %button.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                    %i.material-icons file_upload
+
+      .card.lubrication#lubrication
+        .card-content
+          .clearfix
+            .left
+              %span.card-title Upload lubrication info
+            .right
+              %a{:href=>"/current_lubrication",:style=>"font-size:16px;line-height:38px;"} Download current lube info
+          %form.upload#lubrication{:enctype=>"multipart/form-data",:method=>"post",:action=>"/update_lubrication"}
+            .row
+              .col.s8.m10
+                .input-field.file-field
+                  .btn
+                    %span FILE
+                    %input.file{:type=>"file",:name=>"lubrication_file"}
+                  .file-path-wrapper
+                    %input.file-path.validate{:type=>"text",:placeholder=>"Upload your lubrication.csv here!"}
+              .col.s4.m2
+                .input-field
+                  %button.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                    %i.material-icons file_upload
+
+
+-content_for :body_end do
+  :javascript
+    $(document).on('submit', 'form.upload', function (e) {
+      e.preventDefault();
+      that = $(this)
+      console.log(this)
+      $.ajax({
+        url:that.attr("action"),
+        type:'POST',
+        data: new FormData(that.get(0)),
+        contentType:false,
+        cache:false,
+        processData:false,
+        success:function(data){
+          console.log(data,'data');
+        }
+      });
+    })
+    $(document).on('change', '.file-field input[type="file"]', function (e) {
+      e.preventDefault();
+      var file = this.files[0];
+      console.log(file.type);
+    });
+    var enabledDates = #{@enabledDates};
+    function pad(num) {
+      var norm = Math.floor(Math.abs(num));
+      return (norm < 10 ? '0' : '') + norm;
+    };
+    $("#date").datepicker( {
+      format: 'yyyy-mm-dd',
+      disableDayFn: function(date) {
+      var dateParsed = date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate());
+      console.log(dateParsed)
+      return enabledDates.indexOf(dateParsed) == -1 
+      }
+    });

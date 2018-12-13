@@ -5,7 +5,7 @@ function init(element) {
   section = element.split(/\//)[0]
   card = element.split(/\//)[1]
   $("nav small.title").text($("#rooms > li > a[data-href="+section.substr(1)+"]").text())
-  $("section").hide();
+  $("#daylog section").hide();
   $(section).show();
   $("main").show();
   M.updateTextFields();
@@ -17,6 +17,30 @@ function init(element) {
   if (element.split(/\//).length == 3 ) {
     $(element.split(/\//).join("_")).focus();
   } 
+}
+
+$(".switch.sys input").on("change",function(){
+  toggleSystem($(this))
+})
+
+function toggleSystem(check) {
+  me = check.closest(".card-content").next(".card-action");
+  card = check.closest(".card");
+  if (check.prop("checked")) {
+    me.find("input, select").prop("required", true);
+    me.slideDown();
+    check.closest(".clearfix").find(".card-valid i").removeClass("grey-text").addClass("teal-text");
+    $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").removeClass("grey-text").addClass("teal-text");
+  } else {
+    me.find("input, select").prop("required", false);
+    me.slideUp();
+    check.closest(".clearfix").find(".card-valid i").addClass("grey-text").removeClass("teal-text");
+    $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").addClass("grey-text").removeClass("teal-text");
+  }
+  $.each(me.find(".input-field select"),function(i,e){ checkSelect(e); })
+  $.each(me.find(".input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
+  $.each(me.find(".input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
+  checkSystem(card);
 }
 
 $(".foot-arrows a").on("click",function(){
@@ -97,9 +121,9 @@ function checkRoom(room) {
 }
 
 function checkSystem(card) {
-  total = card.find("input:required[type=number], select").length;
+  total = card.find("input:required[type=number], select:required").length;
   valid = card.find("input.valid:required[type=number]").length + card.find("ul.select-dropdown li.selected").not("ul.select-dropdown li.disabled").length;
-  //console.log(card.attr("id")+": "+valid+" / "+total)
+  console.log(card.attr("id")+": "+valid+" / "+total)
   if (valid < total) {
     card.find(".card-valid i").fadeOut();
     card.attr("data-valid","false")
@@ -158,6 +182,7 @@ function checkInputs() {
   $.each($("form#daylog .input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
   $.each($("form#daylog .card"),function(i,e){ checkSystem($(e)); })
   $.each($("form#daylog section.room"),function(i,e){ checkRoom($(e)); })
+  $.each($(".switch.sys input:checked"),function(i,e){ toggleSystem($(e))})
 }
 
 function setLocal(key,value) {
