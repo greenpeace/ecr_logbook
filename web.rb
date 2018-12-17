@@ -10,11 +10,9 @@ require 'pp'
 require './lib/util.rb'
 
 $session = nil
-$shipname = "Esperanza"
-$shipnick = "Espy"
 $mapping = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping.json"))
+$mapping_slug = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping_slug.json"))
 $lubrication = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/lubrication.json"))
-pp $lubrication
 
 get "/?" do 
   haml :index
@@ -47,14 +45,7 @@ end
 
 get "/admin/?" do 
   pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
-  dates = []
-  Dir.foreach("#{Dir.pwd}/public/output") do |file|
-    if file.match(/\.json$/)
-      date = file.match(/^\d{8}/)[0]
-      dates << "#{date[0..3]}-#{date[4..5]}-#{date[6..7]}"
-    end
-  end
-  @enabledDates = dates.to_json
+  @enabledDates = get_dates.to_json
   haml :admin
 end
 
@@ -120,17 +111,19 @@ error do
   return haml :error
 end
 
-$content = []
-$cats = {}
-$cnms = {}
-$sitename = "MYEZ Engine Room Log"
+$shipname = "Esperanza"
+$shipabbr = "MYEZ"
+$shipnick = "Espy"
+$sitename = "#{$shipabbr} Engine Room Log"
 $title = $sitename
 $domain = "//daylog.myez.gl3"
 $description = ""
 
 def parse pa
   re = {}
+  row = [pa["user"]]
   pa.each do |k,v|
+    next unless v and v.to_s.length > 0
     if ["date","user"].include? k
       re[k] = v
     elsif ["notes"].include? k
@@ -142,7 +135,12 @@ def parse pa
       re[ro] = {} unless re.has_key?(ro)
       re[ro][sy] = {} unless re[ro].has_key?(sy)
       re[ro][sy][me] = v
+      row[$mapping_slug[ro][sy][me]["mid"].to_i] = v if me
     end
+  end
+  row.unshift Time.now.to_i
+  CSV.open("#{Dir.pwd}/public/output/engine_log.csv", "a") do |csv|
+    csv << row
   end
   re
 end

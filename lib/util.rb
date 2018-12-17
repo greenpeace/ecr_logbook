@@ -92,6 +92,7 @@ def output srcfile
   require 'rubyXL'
 
   ref = {}
+  yef = {}
   lube = {"rows"=>[]}
   wb = RubyXL::Parser.parse("#{Dir.pwd}/lib/layouts/layout.xlsx")
   ws = wb.worksheets[0]
@@ -107,7 +108,6 @@ def output srcfile
             ref[v] = [row,col]
           end
           ws[row][col].change_contents("-")
-          p val
         elsif val.match(/^\$l.$/)
           lube["rows"] << row unless lube["rows"].include? row
           if val.match(/^\$lu$/)
@@ -119,6 +119,9 @@ def output srcfile
           end
           pp lube
           ws[row][col].change_contents("")
+        elsif val.match(/^\$y\d+$/)
+          yef[val] = [row,col]
+          ws[row][col].change_contents("-")
         else
           ref[val] = [row,col]
           ws[row][col].change_contents("-")
@@ -127,11 +130,14 @@ def output srcfile
     end
   end
 
-  pp lube
 
-
-  map = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping_slug.json"))
   src = JSON.parse(File.read(srcfile))
+  yday = Date.parse(srcfile.split("/")[-1].split("-")[0], "%Y%m%d") - 1
+  yfile = srcfile.sub(/\d{8}/,yday.strftime("%Y%m%d"))
+  ysrc = nil
+  if File.exists?(yfile)
+    ysrc = JSON.parse(File.read(yfile))
+  end
   res = {}
   sel = ""
 
@@ -147,7 +153,7 @@ def output srcfile
       sys.each do |system, meas|
         meas.each do |measurement, value|
           begin
-            mes = map[room][system][measurement]
+            mes = $mapping_slug[room][system][measurement]
             mid = "$#{mes["mid"]}"
             r,c = *ref[mid]
             if mes["unit"] == "enum" and mes["data"] and mes["data"] != ""
@@ -164,6 +170,31 @@ def output srcfile
     elsif ref.has_key?("$#{room}")
       r,c = *ref["$#{room}"]
       ws[r][c].change_contents(sys)
+    end
+  end
+
+  if yef.keys.length > 0 and ysrc
+    ysrc.each do |room,sys|
+      if sys.is_a? Hash
+        sys.each do |system, meas|
+          meas.each do |measurement, value|
+            begin
+              mes = $mapping_slug[room][system][measurement]
+              mid = "$y#{mes["mid"]}"
+              next unless yef.has_key?(mid)
+              r,c = *yef[mid]
+              if mes["unit"] == "enum" and mes["data"] and mes["data"] != ""
+                sel = value.slug
+              elsif mes["unit"] != "enum" and mes["data"] and mes["data"].slug != sel
+                next
+              end
+              ws[r][c].change_contents(value) #if value and value != ""
+            rescue => e
+              #puts "error (#{e}) => #{mid} - #{room} / #{system} / #{measurement}" 
+            end
+          end
+        end
+      end
     end
   end
 
@@ -222,5 +253,16 @@ def parse_mapping
     return false
   end
   true
+end
+
+def get_dates
+  dates = []
+  Dir.foreach("#{Dir.pwd}/public/output") do |file|
+    if file.match(/\.json$/)
+      date = file.match(/^\d{8}/)[0]
+      dates << "#{date[0..3]}-#{date[4..5]}-#{date[6..7]}"
+    end
+  end
+  dates
 end
 
