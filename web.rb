@@ -108,6 +108,7 @@ not_found do
 end
 
 error do 
+  @error = env['sinatra.error']
   return haml :error
 end
 
