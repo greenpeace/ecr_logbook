@@ -80,6 +80,10 @@ textarea, input[type=text] {
   color: #000;
 }
 
+.lubedel {
+  cursor: pointer;
+}
+
 .modal {
   z-index: 9999 !important;
 }

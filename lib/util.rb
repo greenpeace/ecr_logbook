@@ -92,6 +92,7 @@ def output srcfile
   require 'rubyXL'
 
   ref = {}
+  lube = {"rows"=>[]}
   wb = RubyXL::Parser.parse("#{Dir.pwd}/lib/layouts/layout.xlsx")
   ws = wb.worksheets[0]
 
@@ -101,17 +102,32 @@ def output srcfile
     (h+1).times do |col|
       if ws[row][col] and ws[row][col].datatype == 's' and ws[row][col].value.match(/^\$/)
         val = ws[row][col].value
-        if val.match("|")
+        if val.match("|")[0].length > 0
           val.split("|").each do |v|
             ref[v] = [row,col]
           end
+          ws[row][col].change_contents("-")
+          p val
+        elsif val.match(/^\$l.$/)
+          lube["rows"] << row unless lube["rows"].include? row
+          if val.match(/^\$lu$/)
+            lube["unit"] = col
+          elsif val.match(/^\$lt$/)
+            lube["type"] = col
+          elsif val.match(/^\$la$/)
+            lube["amount"] = col
+          end
+          pp lube
+          ws[row][col].change_contents("")
         else
           ref[val] = [row,col]
+          ws[row][col].change_contents("-")
         end
-        ws[row][col].change_contents("-")
       end
     end
   end
+
+  pp lube
 
 
   map = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping_slug.json"))
@@ -120,7 +136,14 @@ def output srcfile
   sel = ""
 
   src.each do |room,sys|
-    if sys.is_a? Hash
+    if room == "lube"
+      sys.each_with_index do |lub,ind|
+        lub.each do |k,v|
+          next if k == "room"
+          ws[lube["rows"][ind]][lube[k]].change_contents(v)
+        end
+      end
+    elsif sys.is_a? Hash
       sys.each do |system, meas|
         meas.each do |measurement, value|
           begin
@@ -134,7 +157,7 @@ def output srcfile
             end
             ws[r][c].change_contents(value) #if value and value != ""
           rescue => e
-            puts "error (#{e}) => #{mid} - #{room} / #{system} / #{measurement}" 
+            #puts "error (#{e}) => #{mid} - #{room} / #{system} / #{measurement}" 
           end
         end
       end
@@ -151,14 +174,14 @@ end
 
 def parse_mapping
   begin
-    lube = {}
-    oils = []
+    lube = {"oils" => []}
+    
 
     CSV.read("#{Dir.pwd}/lib/mappings/lubrication.csv").each_with_index do |row,ind|
       next if ind == 0
       lube[row[0]] = {} unless lube.has_key? row[0]
       lube[row[0]][row[1]] = row[2]
-      oils << row[2] unless oils.include?(row[2])
+      lube["oils"] << row[2] unless lube["oils"].include?(row[2])
     end
 
     data = {}
@@ -200,3 +223,4 @@ def parse_mapping
   end
   true
 end
+

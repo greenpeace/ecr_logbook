@@ -1,5 +1,7 @@
+var lubeTokens = []
 
 function init(element) {
+  element = element.replace(/^\//,"")
   if(typeof element == "undefined" || element == "#" || element == "") element = "#main"
   //console.log(element)
   section = element.split(/\//)[0]
@@ -42,6 +44,20 @@ function toggleSystem(check) {
   $.each(me.find(".input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
   checkSystem(card);
 }
+
+$("a.lube-add").on("click",function(){
+  $.get("/newlube?room="+$(this).closest("section").attr("id"),function(data){
+    $("#modal .modal-content").html(data);
+    $("#modal").modal("open")
+  })
+})
+
+$("a.lube-del").on("click",function(){
+  $.get("/newlube?room="+$(this).closest("section").attr("id"),function(data){
+    $("#modal .modal-content").html(data);
+    $("#modal").modal("open")
+  })
+})
 
 $(".foot-arrows a").on("click",function(){
   init($(this).attr("href"));
@@ -189,31 +205,69 @@ function setLocal(key,value) {
   localStorage[key] = String(value);
 }
 
+function addLube(room,data,token) {
+  index = 0;
+  while (token == null && index < 12) {
+    token = (parseInt(Math.random()*90000)+10000);
+    if (lubeTokens.indexOf(token) > -1) {
+      token = null;
+    }
+    index ++;
+  }
+  lubeTokens.push(token);
+  console.log(data)
+  console.log(lubeTokens)
+  html = "<tr><td>"+data[0].value+"</td><td>"+data[1].value+"</td><td>"+data[2].value+" liters</td><td>"
+  html += "<input type='hidden' name='lube[][room]' value='"+room+"'/>"
+  html += "<input type='hidden' name='lube[][unit]' value='"+data[0].value+"'/>"
+  html += "<input type='hidden' name='lube[][type]' value='"+data[1].value+"'/>"
+  html += "<input type='hidden' name='lube[][amount]' value='"+data[2].value+"'/>"
+  html += "<a class='lube-del' id='lube-del-"+token+"'><i class='material-icons red-text text-darken-4'>delete</i></a></td></tr>"
+  $("#"+room+"_lubrication .card-action table tbody").append(html)
+  $("#"+room+"_lubrication .card-action").slideDown();
+  setLocal("lubrication_"+room+"_"+token,data[0].value+"|"+data[1].value+"|"+data[2].value);
+}
+
 
 // debug
 
-function prefill() {
+function serverFill() {
   $.get("/localStorage",function(data){
     data = data.replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
     $.each(data,function(i,e){
-      d = e.split("=");
-      if (d[1] == "on") {
-        $("input[name="+d[0]+"]").prop("checked",true)
-      } else if (d[0].match(/_running/)) {
-        $("select[name="+d[0]+"] option[value="+d[1]+"]").prop("selected",true)
-        $("select[name="+d[0]+"]").formSelect();
-        if ($("select[name="+d[0]+"]").closest(".input-field").hasClass("dev")) {
-          console.log($("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()));
-          $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide").slideUp();
-          $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide input").prop("required", false);
-          $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()).slideDown();
-          $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()).find("input").prop("required", true);
-        }
-      } else {
-        $("input[name="+d[0]+"]").val(d[1])
-      }
+      fill(e.split("="));
     })
     M.updateTextFields();
     checkInputs();
   })
+}
+
+function localFill() {
+  for (var i = 0; i < localStorage.length; i++) {
+    fill([localStorage.key(i),localStorage.getItem(localStorage.key(i))]);
+  }
+  M.updateTextFields();
+}
+
+function fill(d) {
+  if (d[1] == "on") {
+    $("input[name="+d[0]+"]").prop("checked",true)
+  } else if (d[0].match(/_running/)) {
+    $("select[name="+d[0]+"] option[value="+d[1]+"]").prop("selected",true)
+    $("select[name="+d[0]+"]").formSelect();
+    if ($("select[name="+d[0]+"]").closest(".input-field").hasClass("dev")) {
+      console.log($("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()));
+      $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide").slideUp();
+      $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide input").prop("required", false);
+      $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()).slideDown();
+      $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()).find("input").prop("required", true);
+    }
+  } else if (d[0].match(/^lubrication_/)) {
+    room = d[0].split("_")[1]
+    token = d[0].split("_")[2]
+    data = d[1].split("|")
+    addLube(room, [{name:"unit",value:data[0]},{name:"oil_type",value:data[1]},{name:"amount",value:data[2]}],token);
+  } else {
+    $("input[name="+d[0]+"]").val(d[1])
+  }
 }

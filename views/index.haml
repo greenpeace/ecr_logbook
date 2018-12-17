@@ -86,14 +86,22 @@
               .card-content
                 .clearfix
                   .left.card-valid
+                    %i.card-valid.prefix.material-icons.black-text.large{:style=>"font-size:32px;"} opacity
                     &nbsp;
                   .left
-                    %i.card-valid.prefix.material-icons.teal-text.large{:style=>"font-size:32px;display:none;"} check_circle
                     %span.card-title Lubrication
                   .right
                     %a.lube-add
                       %i.card-valid.prefix.material-icons.teal-text{:style=>"font-size:32px;"} add_circle
               .card-action.off
+                %table
+                  %thead
+                    %tr
+                      %th Unit
+                      %th Oil Type
+                      %th Amount
+                      %th &nbsp;
+                  %tbody
                     
       .row
         .col.s12.foot-arrows

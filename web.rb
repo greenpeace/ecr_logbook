@@ -10,18 +10,35 @@ require 'pp'
 require './lib/util.rb'
 
 $session = nil
+$shipname = "Esperanza"
+$shipnick = "Espy"
 $mapping = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping.json"))
 $lubrication = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/lubrication.json"))
+pp $lubrication
 
 get "/?" do 
   haml :index
 end
 
 post "/log/?" do 
+  pp params
   File.open("#{Dir.pwd}/public/output/#{Date.strptime(params["date"],"%b %d, %Y").strftime("%Y%m%d")}-engine_log.json","w") do |file|
     file << JSON.pretty_generate(parse params) #.gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
   end
   return redirect to :thanks
+end
+
+get "/newlube/?" do 
+  @room = params["room"]
+  pass unless $lubrication.keys.map(&:slug).include?(@room)
+  @data = {}
+  $lubrication.each do |k,v|
+    next unless k.slug == params["room"]
+    @data["units"] = v
+    break
+  end
+  @data["oils"] = $lubrication["oils"]
+  haml :lube, :layout => false
 end
 
 get "/thanks/?" do 
@@ -118,6 +135,8 @@ def parse pa
       re[k] = v
     elsif ["notes"].include? k
       re[k] = " \n#{v}"
+    elsif ["lube"].include? k
+      re[k] = v
     else
       ro, sy, me = *k.split("_")
       re[ro] = {} unless re.has_key?(ro)

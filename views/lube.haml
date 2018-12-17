@@ -1,0 +1,52 @@
+
+.modal-header
+  .row
+    .col.s12.m8.offset-m2
+      %h5 Add lubrication
+
+.modal-body
+  %form#lube{"data-room"=>@room}
+
+    .row
+      .col.s12.m8.offset-m2
+        .input-field
+          %select{:validate=>true,:name=>"unit"}
+            %option{:value=>"nil",:disabled=>true,:selected=>true} Select a unit
+            -@data["units"].each do |unit|
+              %option{:value=>unit[0],"data-default"=>unit[1].slug}= unit[0]
+          %label Unit
+
+    .row
+      .col.s12.m8.offset-m2
+        .input-field
+          %select{:validate=>true,:name=>"oil_type"}
+            %option{:value=>"nil",:disabled=>true,:selected=>true} Select an oil type
+            -@data["oils"].sort.each do |oil|
+              %option{:value=>oil,"data-slug"=>oil.slug}= oil
+          %label Type of oil
+
+    .row
+      .col.s12.m8.offset-m2
+        .input-field
+          %input#amount{ :type => "number", :name => "amount", :step => 1, :min  => 0, :validate => true } 
+          %label{:for=>"amount"} Amount in liters
+
+    .row
+      .col.s12.m8.offset-m2
+        .input-field
+          %button.btn.full.submit.large
+            .large ADD LUBRICATION
+
+:javascript
+  $("#lube select").formSelect();
+  $("#lube select[name=unit]").on("change",function(e){
+    $("select[name=oil_type] > option").prop("selected",false)
+    $("select[name=oil_type] > option[data-slug="+$(this).find("option:selected").data("default")+"]").prop("selected",true)
+    console.log($("select[name=oil_type] option[data-slug="+$(this).find("option:selected").data("default")+"]"))
+    $("select[name=oil_type]").formSelect();
+  });
+  $("#lube").on("submit",function(e){
+    e.preventDefault();
+    addLube($(this).data("room"),$(this).serializeArray(),null)
+    $("#modal").modal("close");
+  })

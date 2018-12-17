@@ -17,7 +17,7 @@
     .navbar-fixed
       %nav.teal{:role => "navigation"}
         .nav-wrapper.container
-          %a#logo-container.brand-logo{:href => "#"}
+          %a#logo-container.brand-logo{:href => "/#"}
             %span.hide-on-med-and-down Engine Room Daylog &nbsp;
             %small.title
           %ul.right.hide-on-med-and-down
@@ -29,9 +29,9 @@
               %ul.dropdown-content#rooms
                 -$mapping.each do |room,systems|
                   %li
-                    %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"##{room.slug}"}=room
+                    %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"/##{room.slug}"}=room
                 %li
-                  %a.navlink.waves-effect.waves-teal.tab{"data-href"=>"submit",:href=>"#submit"} Submit
+                  %a.navlink.waves-effect.waves-teal.tab{"data-href"=>"submit",:href=>"/#submit"} Submit
           %ul#nav-mobile.sidenav
             %li
               .teal.white-text{:style=>"padding:0 16px;"}
@@ -49,12 +49,12 @@
                       %ul
                         -systems.each do |system,measurements|
                           %li
-                            %a.navlink.waves-effect.waves-teal{:href=>"##{room.slug}/#{system.slug}","data-href"=>"#{room.slug}_#{system.slug}"}
+                            %a.navlink.waves-effect.waves-teal{:href=>"/##{room.slug}/#{system.slug}","data-href"=>"#{room.slug}_#{system.slug}"}
                               =system
                               %i.material-icons.prefix.grey-text.yes{:style=>"margin-right:12px;display:none;"} check
                               %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
                 %li.bold
-                  %a.navlink.waves-effect.waves-teal{:href=>"#submit","data-href"=>"#submit",:style=>"padding-left:52px;"} 
+                  %a.navlink.waves-effect.waves-teal{:href=>"/#submit","data-href"=>"#submit",:style=>"padding-left:52px;"} 
                     Submit
           %a.sidenav-trigger{"data-target" => "nav-mobile", :href => "#", :style=>"margin: 0 -2px;"}
             %i.material-icons menu
@@ -63,6 +63,8 @@
       .container
         =yield
 
+    #modal.modal
+      .modal-content
 
 
     %footer.page-footer.red.darken-4.hide-on-med-and-down{:style=>"display:none;"}
@@ -76,7 +78,10 @@
           Made in the 
           %a.bold.white-text{:href => "http://materializecss.com"} Radio Shack Esperanza
           -#TA2LCI
-          .right= Date.today.strftime('%a, %b %d')
+          .right
+            = request.ip
+            on
+            = Date.today.strftime('%a, %b %d')
     / Scripts
     %script{:src => "/js/main.js?#{rand(1024)}"}
     %script{:src => "/js/app.js?#{rand(1024)}", :type=>"text/javascript"}
@@ -89,6 +94,7 @@
         $('.collapsible').collapsible();
         $('.dropdown-trigger').dropdown({alignment:'right',constrainWidth:false,coverTrigger:false});
         $('select').formSelect();
+        $('.modal').modal();
 
         $(".input-field.devhide input").prop("required",false);
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()+" input").prop("required",true)
