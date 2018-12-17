@@ -95,7 +95,7 @@ post "/update_lubrication/?" do
   oldfile = "#{Dir.pwd}/lib/mappings/old/lubrication_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
   `mv #{Dir.pwd}/lib/mappings/lubrication.csv #{oldfile}`
   `mv #{params['lubrication_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/lubrication.csv`
-  if parse_lubrication
+  if parse_mapping
     "ok" 
   else 
     `mv #{oldfile} #{Dir.pwd}/lib/mappings/lubrication.csv`
