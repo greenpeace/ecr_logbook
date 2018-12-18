@@ -10,18 +10,18 @@
       .row
         -systems.each do |system,measurements|
           .col.s12.m6.offset-m3
-            .card{:class=>system.slug,:id=>"#{room.slug}_#{system.slug}"}
+            .card.system{:class=>system.slug,:id=>"#{room.slug}_#{system.slug}"}
               .card-content
                 .clearfix
                   .left.card-valid
-                    %i.prefix.material-icons.grey-text{:style=>"font-size:32px;display:none;"} check_circle
+                    %i.prefix.material-icons.grey-text.system-valid{:style=>"font-size:32px;display:none;"} check_circle
                     &nbsp;
                   .left
                     %span.card-title=system
-                  .switch.right.sys
-                    %label
-                      %input.check{:type=>"checkbox", :name=>"#{room.slug}_#{system.slug}"}
-                      %span.lever
+                .switch.sys
+                  %label
+                    %input.check{:type=>"checkbox", :name=>"#{room.slug}_#{system.slug}"}
+                    %span.lever
               .card-action.off
                 -measurements.each do |measurement,specs|
                   -id = "#{room.slug}_#{system.slug}_#{measurement.slug}"
@@ -75,9 +75,8 @@
                         :step => ["cube","bar"].include?(specs["unit"]) ? 0.01 : 1,
                         :min  => specs.has_key?("min") ? specs["min"] : nil,
                         :max  => specs.has_key?("max") ? specs["max"] : nil,
-                        #:required => true,
                         :validate => true } 
-                      -#,:placeholder=>id}
+                      .unit=specs["unit"]
                       %label{:for=>id}= measurement
 
         -if $lubrication.has_key?(room)
@@ -138,7 +137,7 @@
                     %i.material-icons.teal-text{:style=>"font-size:32px;display:none;"} check_circle
               .col.s12.m6
                 .input-field
-                  %input.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>Date.today.strftime("%b %d, %Y")}
+                  %input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>Date.today.strftime("%b %d, %Y")}
                   %label{:for=>"date"} Date
               .col.s12.m6
                 .input-field
@@ -160,3 +159,9 @@
                   %button.btn.full.submit.large
                     %i.material-icons.right.large send
                     .large SEND FORM
+
+-content_for :body_end do
+  :javascript
+    $("#date").datepicker( {
+      format: 'yyyy-mm-dd'
+    });

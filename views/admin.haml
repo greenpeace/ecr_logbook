@@ -18,6 +18,22 @@
                   %button.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
                     %i.material-icons file_download
 
+      .card.output#edit
+        .card-content
+          .clearfix
+            .left
+              %span.card-title Edit previous records
+          %form.edit{:method=>"post",:action=>"/edit_previous"}
+            .row
+              .col.s8.m10
+                .input-field
+                  %input#edit_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>"",:placeholder=>"Pick a date here"}
+                  %label{:for=>"edit_date"} Date
+              .col.s4.m2
+                .input-field
+                  %button.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                    %i.material-icons edit
+
       .card.layout#layout
         .card-content
           .clearfix
@@ -81,6 +97,16 @@
                   %button.red.darken-4.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
                     %i.material-icons file_upload
 
+      .card.history#history
+        .card-content
+          .clearfix
+            .left
+              %a.teal-text{:href=>"/output/engine_log.csv"}
+                %span.card-title{:style=>"font-size:24px;line-height:64px;"} Download logging history (.CSV)
+            .right
+              %a.teal.btn-large.btn-floating.waves-effect.waves-light{:href=>"/output/engine_log.csv",:style=>"font-size:16px;line-height:38px;"}
+                %i.material-icons file_download
+
 
 -content_for :body_end do
   :javascript
@@ -96,7 +122,42 @@
         cache:false,
         processData:false,
         success:function(data){
-          console.log(data,'data');
+          console.log(data)
+          M.toast({html: '<b>Success</b>',classes:"teal"})
+        },
+        error:function(data){
+          M.toast({html: '<b>Error</b>',classes:"red darken-4"})
+        }
+      });
+    })
+    $(document).on('submit', 'form.edit', function (e) {
+      e.preventDefault();
+      that = $(this)
+      console.log(this)
+      $.ajax({
+        url:that.attr("action"),
+        type:'POST',
+        data: new FormData(that.get(0)),
+        contentType:false,
+        cache:false,
+        processData:false,
+        success:function(data){
+          data = JSON.parse(data);
+          localStorage.clear();
+          $.each(data[1],function(i,e){
+            addLube(e[0],e[1])
+          })
+          fields = data[0].replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
+          $.each(fields,function(i,e){
+            e = e.split("=");
+            console.log(e)
+            setLocal(e[0],e[1]);
+          })
+          window.location = "/#update"
+          M.toast({html: '<b>Loaded previous recording.</b>',classes:"teal"})
+        },
+        error:function(data){
+          M.toast({html: '<b>Error</b>',classes:"red darken-4"})
         }
       });
     })
@@ -110,7 +171,7 @@
       var norm = Math.floor(Math.abs(num));
       return (norm < 10 ? '0' : '') + norm;
     };
-    $("#date").datepicker( {
+    $("#date,#edit_date").datepicker( {
       format: 'yyyy-mm-dd',
       disableDayFn: function(date) {
       var dateParsed = date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate());
@@ -118,3 +179,4 @@
       return enabledDates.indexOf(dateParsed) == -1 
       }
     });
+

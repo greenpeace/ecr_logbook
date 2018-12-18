@@ -39,8 +39,9 @@ textarea, input[type=text] {
 }
 
 .switch.sys {
-  margin: 4px -20px;
-  padding: 0;
+  position:absolute;
+  top:24px;
+  right:24px;
 }
 
 .card-action.off{
@@ -78,6 +79,13 @@ textarea, input[type=text] {
 
 .input-field > label {
   color: #000;
+}
+
+.input-field > .unit {
+  color: #999;
+  position:absolute;
+  right: 40px;
+  top :12px;
 }
 
 .lubedel {

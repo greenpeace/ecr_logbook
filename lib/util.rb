@@ -224,7 +224,7 @@ def parse_mapping
       meas = row[3]
       meas = "#{row[9]} #{row[3]}" if row[9] and row[9].length > 0 and row[4] != "enum"
       p ind,row if data[row[1]][row[2]].has_key? meas
-      data[row[1]][row[2]][meas] = { "unit" => row[4] }
+      data[row[1]][row[2]][meas] = { "unit" => unit_sign(row[4]) }
       data[row[1]][row[2]][meas]["min"] = row[5] if row[5] and row[5].length > 0
       data[row[1]][row[2]][meas]["max"] = row[6] if row[6] and row[6].length > 0
       data[row[1]][row[2]][meas]["opt"] = row[7] if row[7] and row[7].length > 0
@@ -249,10 +249,17 @@ def parse_mapping
     File.open("#{Dir.pwd}/lib/mappings/lubrication.json","w") {|f| f << JSON.pretty_generate(lube)}
     File.open("#{Dir.pwd}/lib/mappings/mapping.json","w") {|f| f << JSON.pretty_generate(data)}
     File.open("#{Dir.pwd}/lib/mappings/mapping_slug.json","w") {|f| f << JSON.pretty_generate(data_slug)}
-  rescue
-    return false
+  rescue => e
+    return e
   end
   true
+end
+
+def unit_sign u
+  if ["C","deg","percent"].include?(u)
+    u = {"C"=>"°C","deg"=>"°","percent"=>"%"}[u]
+  end
+  u
 end
 
 def get_dates

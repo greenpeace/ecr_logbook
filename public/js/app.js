@@ -21,22 +21,31 @@ function init(element) {
   } 
 }
 
+$(".card.system .card-content .clearfix").on("click",function(){
+  check = $(this).closest(".card").find(".switch.sys input")
+  if (!check.prop("checked")) {
+    check.prop("checked",true);
+    toggleSystem(check)
+  }
+})
+
 $(".switch.sys input").on("change",function(){
   toggleSystem($(this))
 })
 
 function toggleSystem(check) {
   me = check.closest(".card-content").next(".card-action");
+  //console.log(check)
   card = check.closest(".card");
   if (check.prop("checked")) {
     me.find("input, select").prop("required", true);
     me.slideDown();
-    check.closest(".clearfix").find(".card-valid i").removeClass("grey-text").addClass("teal-text");
+    card.find(".card-valid i").removeClass("grey-text").addClass("teal-text");
     $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").removeClass("grey-text").addClass("teal-text");
   } else {
     me.find("input, select").prop("required", false);
     me.slideUp();
-    check.closest(".clearfix").find(".card-valid i").addClass("grey-text").removeClass("teal-text");
+    card.find(".card-valid i").addClass("grey-text").removeClass("teal-text");
     $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").addClass("grey-text").removeClass("teal-text");
   }
   $.each(me.find(".input-field select"),function(i,e){ checkSelect(e); })
@@ -139,7 +148,7 @@ function checkRoom(room) {
 function checkSystem(card) {
   total = card.find("input:required[type=number], select:required").length;
   valid = card.find("input.valid:required[type=number]").length + card.find("ul.select-dropdown li.selected").not("ul.select-dropdown li.disabled").length;
-  console.log(card.attr("id")+": "+valid+" / "+total)
+  //console.log(card.attr("id")+": "+valid+" / "+total)
   if (valid < total) {
     card.find(".card-valid i").fadeOut();
     card.attr("data-valid","false")
@@ -215,8 +224,6 @@ function addLube(room,data,token) {
     index ++;
   }
   lubeTokens.push(token);
-  console.log(data)
-  console.log(lubeTokens)
   html = "<tr><td>"+data[0].value+"</td><td>"+data[1].value+"</td><td>"+data[2].value+" liters</td><td>"
   html += "<input type='hidden' name='lube[][room]' value='"+room+"'/>"
   html += "<input type='hidden' name='lube[][unit]' value='"+data[0].value+"'/>"
@@ -247,16 +254,19 @@ function localFill() {
     fill([localStorage.key(i),localStorage.getItem(localStorage.key(i))]);
   }
   M.updateTextFields();
+  checkInputs();
 }
 
 function fill(d) {
   if (d[1] == "on") {
-    $("input[name="+d[0]+"]").prop("checked",true)
+    input = $("input[name="+d[0]+"]");
+    input.prop("checked",true)
   } else if (d[0].match(/_running/)) {
     $("select[name="+d[0]+"] option[value="+d[1]+"]").prop("selected",true)
-    $("select[name="+d[0]+"]").formSelect();
+    input = $("select[name="+d[0]+"]");
+    input.formSelect();
     if ($("select[name="+d[0]+"]").closest(".input-field").hasClass("dev")) {
-      console.log($("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()));
+      //console.log($("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()));
       $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide").slideUp();
       $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide input").prop("required", false);
       $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()).slideDown();
@@ -268,6 +278,13 @@ function fill(d) {
     data = d[1].split("|")
     addLube(room, [{name:"unit",value:data[0]},{name:"oil_type",value:data[1]},{name:"amount",value:data[2]}],token);
   } else {
-    $("input[name="+d[0]+"]").val(d[1])
+    input = $("input[name="+d[0]+"]");
+    input.val(d[1])
+  }
+  if (input.attr("type") != "hidden") {
+    console.log(input.attr("type"))
+    check = input.closest(".card.system").find(".switch.sys input");
+    check.prop("checked",true);
+    toggleSystem(check);
   }
 }

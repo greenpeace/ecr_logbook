@@ -78,11 +78,12 @@ post "/update_mapping/?" do
   oldfile = "#{Dir.pwd}/lib/mappings/old/mapping_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
   `mv #{Dir.pwd}/lib/mappings/mapping.csv #{oldfile}`
   `mv #{params['mapping_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/mapping.csv`
-  if parse_mapping
+  e = parse_mapping
+  if e == true
     "ok" 
   else 
     `mv #{oldfile} #{Dir.pwd}/lib/mappings/mapping.csv`
-    "error"
+    e
   end
 end
 
@@ -102,6 +103,11 @@ post "/update_lubrication/?" do
     `mv #{oldfile} #{Dir.pwd}/lib/mappings/lubrication.csv`
     "error"
   end
+end
+
+post "/edit_previous/?" do 
+  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+  unparse JSON.parse(File.read("#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"))
 end
 
 not_found do 
@@ -145,4 +151,25 @@ def parse pa
     csv << row
   end
   re
+end
+
+def unparse pa
+  re = []
+  lube = []
+  pa.each do |room,sys|
+    if room == "lube"
+      sys.each_with_index do |lub,ind|
+        lube << [lub["room"],[{:name=>"unit",:value=>lub["unit"]},{:name=>"type",:value=>lub["type"]},{:name=>"amount",:value=>lub["amount"]}]]
+      end
+    elsif sys.is_a? Hash
+      sys.each do |system, meas|
+        meas.each do |measurement, value|
+          re << "#{[room,system,measurement].join("_")}=#{value}"
+        end
+      end
+    elsif sys.is_a? String
+      re << "#{room}=#{sys}"
+    end
+  end
+  [re.join("&"),lube].to_json
 end
