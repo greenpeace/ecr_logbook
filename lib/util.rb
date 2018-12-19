@@ -248,6 +248,11 @@ def parse_mapping
     File.open("#{Dir.pwd}/lib/mappings/lubrication.json","w") {|f| f << JSON.pretty_generate(lube)}
     File.open("#{Dir.pwd}/lib/mappings/mapping.json","w") {|f| f << JSON.pretty_generate(data)}
     File.open("#{Dir.pwd}/lib/mappings/mapping_slug.json","w") {|f| f << JSON.pretty_generate(data_slug)}
+
+    $mapping = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping.json"))
+    $mapping_slug = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping_slug.json"))
+    $lubrication = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/lubrication.json"))
+
   rescue => e
     return e
   end
