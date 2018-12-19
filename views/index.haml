@@ -1,12 +1,10 @@
-
-
 %form#daylog{:method=>"post",:action=>"/log"}
   %section#main
-    -#%h5 Hello world
+    %h5{:style=>"display:none;"} Hello world
   -index = 0
   -$mapping.each do |room,systems|
     %section{:id=>room.slug}
-      -#%h5.hide-on-med-and-down= room
+      %h5.hide-on-med-and-down{:style=>"display:none;"}= room
       .row
         -systems.each do |system,measurements|
           .col.s12.m6.offset-m3
@@ -20,7 +18,8 @@
                     %span.card-title=system
                 .switch.sys
                   %label
-                    %input.check{:type=>"checkbox", :name=>"#{room.slug}_#{system.slug}"}
+                    %input.check{:type=>"checkbox", :name=>"#{room.slug}_#{system.slug}_is-currently-working"}
+                    -#%input.check{:type=>"checkbox"}
                     %span.lever
               .card-action.off
                 -measurements.each do |measurement,specs|
@@ -36,6 +35,7 @@
                     -dirt = [nil,nil,"sw"]
 
                   .input-field{:style=>dirt[0],"data-name"=>dirt[1],:class=>dirt[2]}
+
                     -if specs["unit"] == "enum"
                       %i.material-icons.prefix.grey-text.maybe chevron_right
                       %i.material-icons.prefix.teal-text.yes check
@@ -49,10 +49,10 @@
                           -[*specs["min"].to_i..specs["max"].to_i].each do |option|
                             %option{:value=>option}= measurement.sub("#",option.to_s)
                       %label=measurement
+
                     -elsif specs["unit"] == "binary"
-                      -#%i.material-icons.prefix.grey-text.maybe chevron_right
+                      %i.material-icons.prefix.grey-text.maybe check
                       %i.material-icons.prefix.teal-text.yes check
-                      %i.material-icons.prefix.teal-text.maybe check
                       %input.checkhide{:type=>"hidden", :name=>id, :value=>"off"}
                       -#%i.material-icons.prefix.red-text.text-darken-4.no close
                       .clearfix
@@ -60,11 +60,37 @@
                           %label{:for=>id}= measurement
                         .switch.right
                           %label
-                            &nbsp; &nbsp; Off
                             %input.check{:type=>"checkbox", :name=>id}
                             %span.lever
-                            On
-                  
+
+                    -elsif specs["unit"] == "trinary"
+                      -#%i.material-icons.prefix.red-text.text-darken-4.no close
+                      .clearfix
+                        .left
+                          %i.material-icons.prefix.grey-text.maybe chevron_right
+                          %i.material-icons.prefix.teal-text.yes check
+                          %label.fix= measurement
+                        .radios.right
+                          %label
+                            %input{:type=>"radio",:name=>id,:id=>"#{id}_L",:value=>"L",:validate=>true}
+                            %span L
+                          %label
+                            %input{:type=>"radio",:name=>id,:id=>"#{id}_M",:value=>"M",:validate=>true}
+                            %span M
+                          %label
+                            %input{:type=>"radio",:name=>id,:id=>"#{id}_H",:value=>"H",:validate=>true}
+                            %span H
+
+                    -elsif specs["unit"] == "scale"
+                      %i.material-icons.prefix.grey-text.range-valid.maybe check
+                      %i.material-icons.prefix.teal-text.range-valid.yes check
+                      %label{:for=>id}= measurement
+                      .right.range-value.grey-text{"data-source"=>id}
+                      %br/
+                      %br/
+                      .relative.range
+                        %input.scale.valid{:type=>"range", :name=>id, :id=>id, :min=>(specs.has_key?("min") ? specs["min"] : 0), :max=>(specs.has_key?("max") ? specs["max"] : 10), :value=>0}
+
                     -else
                       %i.material-icons.prefix.grey-text.maybe chevron_right
                       %i.material-icons.prefix.teal-text.yes check
@@ -124,7 +150,7 @@
     -index += 1
 
   %section#submit
-    %h5.hide-on-med-and-down Submit results
+    %h5.hide-on-med-and-down{:style=>"display:none;"} Submit results
     .row
       .col.s12
         .card
@@ -132,7 +158,7 @@
             .row
               .col.s12
                 .clearfix
-                  %span.left.card-title Submit
+                  %span.left.card-title Submit results
                   -#.right.card-valid
                     %i.material-icons.teal-text{:style=>"font-size:32px;display:none;"} check_circle
               .col.s12.m6
@@ -154,7 +180,10 @@
                       %span.left.title.white-text Following problems encountered:
                     %ul.content
 
-              .col.s8.offset-s2.m6.offset-m3
+              .col.s2.m1.foot-arrows
+                %a.btn-large.btn-floating.waves-effect.waves-light{:style=>"margin-left:24px;",:href=>"##{$mapping.keys[-1].slug}"}
+                  %i.material-icons chevron_left
+              .col.s8.m6.offset-m2
                 .input-field
                   %button.btn.full.submit.large
                     %i.material-icons.right.large send

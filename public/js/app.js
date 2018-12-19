@@ -33,25 +33,39 @@ $(".switch.sys input").on("change",function(){
   toggleSystem($(this))
 })
 
+$("form#daylog input[type=range]").on("change",function(){
+  $(".range-value[data-source="+$(this).attr("id")+"]").text($(this).val())
+})
+
 function toggleSystem(check) {
   me = check.closest(".card-content").next(".card-action");
   //console.log(check)
   card = check.closest(".card");
   if (check.prop("checked")) {
-    me.find("input, select").prop("required", true);
-    me.slideDown();
+    me.find("input, select")/*.not("input[type=radio], input[type=range]")*/.prop("required", true);
     card.find(".card-valid i").removeClass("grey-text").addClass("teal-text");
     $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").removeClass("grey-text").addClass("teal-text");
+    me.slideDown(function(){
+      $.each(me.find(".input-field select"),function(i,e){ checkSelect(e); })
+      $.each(me.find(".input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
+      $.each(me.find(".input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
+      $.each(me.find(".input-field input[type=radio]"),function(i,e){ checkRadio(e); })
+      $.each(me.find(".input-field input[type=range]"),function(i,e){ checkRange(e); })
+      checkSystem(card);
+    });
   } else {
     me.find("input, select").prop("required", false);
-    me.slideUp();
     card.find(".card-valid i").addClass("grey-text").removeClass("teal-text");
     $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").addClass("grey-text").removeClass("teal-text");
+    me.slideUp(function(){
+      $.each(me.find(".input-field select"),function(i,e){ checkSelect(e); })
+      $.each(me.find(".input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
+      $.each(me.find(".input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
+      $.each(me.find(".input-field input[type=radio]"),function(i,e){ checkRadio(e); })
+      $.each(me.find(".input-field input[type=range]"),function(i,e){ checkRange(e); })
+      checkSystem(card);
+    });
   }
-  $.each(me.find(".input-field select"),function(i,e){ checkSelect(e); })
-  $.each(me.find(".input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
-  $.each(me.find(".input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
-  checkSystem(card);
 }
 
 $("a.lube-add").on("click",function(){
@@ -107,6 +121,10 @@ function validateForm(){
       if (addr.length == 1 ) {
         href = "#submit";
         txt = "<b>"+$(e).next("label").text() + "</b> (just above)";
+      } else if ($(e).attr("type") == "radio") {
+        console.log(addr)
+        href = "#"+ addr.join("/");
+        txt = "<b>"+$(e).closest(".clearfix").find("label.fix").text() + "</b> (" + $(e).closest("section").find("h5").text() + " / " + $(e).closest(".card").find(".card-title").text() + ")";
       } else {
         href = "#"+ addr.join("/");
         txt = "<b>"+$(e).next("label").text() + "</b> (" + $(e).closest("section").find("h5").text() + " / " + $(e).closest(".card").find(".card-title").text() + ")";
@@ -124,6 +142,16 @@ $("form#daylog .input-field input[type=number], input.ex").on("blur",function(){
 
 $("form#daylog .input-field input[type=checkbox]").on("change",function(){
   checkSwitch(this);
+  checkSystem($(this).closest(".card"));
+})
+
+$("form#daylog .input-field input[type=radio]").on("change",function(){
+  checkRadio(this);
+  checkSystem($(this).closest(".card"));
+})
+
+$("form#daylog .input-field input[type=range]").on("change",function(){
+  checkRange(this);
   checkSystem($(this).closest(".card"));
 })
 
@@ -191,6 +219,32 @@ function checkSwitch(input) {
   }
 }
 
+function checkRadio(input) {
+  $(input).closest(".clearfix").prevAll("i.prefix").hide()
+  if ($("input[name="+$(input).attr("name")+"]:checked").length > 0) {
+    console.log(input);
+    $(input).closest(".clearfix").prevAll("i.prefix.yes").show();
+    $("input[name="+$(input).attr("name")+"]").addClass("valid");
+    setLocal($(input).attr("name"),$(input).val());
+  } else {
+    $(input).closest(".clearfix").prevAll("i.prefix.maybe").show()
+    $("input[name="+$(input).attr("name")+"]:first").removeClass("valid");
+  }
+  $("input[name="+$(input).attr("name")+"]").not(":visible").addClass("valid");
+}
+
+function checkRange(input) {
+  $(input).closest(".range").prevAll("i.prefix").hide()
+  $(".range-value[data-source="+$(input).attr("id")+"]").text($(input).val())
+  if ($(input).val() > 0) {
+    $(input).closest(".range").prevAll("i.prefix.yes").show()
+    setLocal($(input).attr("name"),$(input).val());
+  } else {
+    $(input).closest(".range").prevAll("i.prefix.maybe").show()
+    setLocal($(input).attr("name"),$(input).val());
+  }
+}
+
 function checkSelect(input) {
   $(input).closest(".select-wrapper").prevAll("i.prefix").hide()
   if ($(input).find("option:selected").prop("disabled")) {
@@ -205,6 +259,8 @@ function checkInputs() {
   $.each($("form#daylog .input-field select"),function(i,e){ checkSelect(e); })
   $.each($("form#daylog .input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
   $.each($("form#daylog .input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
+  $.each($("form#daylog .input-field input[type=radio]"),function(i,e){ checkRadio(e); })
+  $.each($("form#daylog .input-field input[type=range]"),function(i,e){ checkRange(e); })
   $.each($("form#daylog .card"),function(i,e){ checkSystem($(e)); })
   $.each($("form#daylog section.room"),function(i,e){ checkRoom($(e)); })
   $.each($(".switch.sys input:checked"),function(i,e){ toggleSystem($(e))})

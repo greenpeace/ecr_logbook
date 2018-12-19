@@ -129,17 +129,20 @@ $description = ""
 
 def parse pa
   re = {}
+  on = $mapping_slug.keys.map{|k|[k,[]]}.to_h
   row = [pa["user"]]
   pa.each do |k,v|
     next unless v and v.to_s.length > 0
+    ro, sy, me = *k.split("_")
     if ["date","user"].include? k
       re[k] = v
     elsif ["notes"].include? k
       re[k] = " \n#{v}"
     elsif ["lube"].include? k
       re[k] = v
-    else
-      ro, sy, me = *k.split("_")
+    elsif me == "is-currently-working" and v == "on"
+      on[ro] << sy
+    elsif on[ro].include? sy
       re[ro] = {} unless re.has_key?(ro)
       re[ro][sy] = {} unless re[ro].has_key?(sy)
       re[ro][sy][me] = v

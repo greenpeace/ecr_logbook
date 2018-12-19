@@ -117,7 +117,6 @@ def output srcfile
           elsif val.match(/^\$la$/)
             lube["amount"] = col
           end
-          pp lube
           ws[row][col].change_contents("")
         elsif val.match(/^\$y\d+$/)
           yef[val] = [row,col]

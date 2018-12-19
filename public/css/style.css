@@ -40,7 +40,7 @@ textarea, input[type=text] {
 
 .switch.sys {
   position:absolute;
-  top:24px;
+  top:12px;
   right:24px;
 }
 
@@ -112,6 +112,51 @@ textarea, input[type=text] {
 
 .bold { font-weight: bold; }
 
+.relative {
+  position:relative;
+}
+
+label.fix {
+  font-size: 1rem;
+  color: #000;
+  line-height: 58px;
+}
+[type="radio"]:not(:checked) + span, [type="radio"]:checked + span {
+  padding: 0 10px 0 25px;
+  color: #000;
+}
+.radios {
+  padding-top: 18px;
+}
+
+
+
+.range {
+  padding-left:45px;
+}
+.range-value {
+  font-size: 24px;
+  line-height: 45px;
+  margin-right: 2px
+}
+.input-field i.prefix.range-valid {
+  margin-top: 2px;
+}
+input[type="range"] {
+  margin: 0;
+}
+input[type='range'], 
+input[type='range']:focus, 
+input[type='range']:active, 
+input[type='range']::-moz-focus-inner, 
+input[type='range']::-moz-focus-outer,
+input[type='range']:-moz-focusring {
+  border: 0;
+  outline: none;
+}
+input[type="range"] + .thumb {
+  display: none;
+}
 
 /*body {
   background: #ddd;
