@@ -181,8 +181,10 @@
                     %ul.content
 
               .col.s2.m1.foot-arrows
-                %a.btn-large.btn-floating.waves-effect.waves-light{:style=>"margin-left:24px;",:href=>"##{$mapping.keys[-1].slug}"}
-                  %i.material-icons chevron_left
+                .input-field
+                  %a.btn.full.large.waves-effect.waves-light{:href=>"##{$mapping.keys[-1].slug}"}
+                    %i.material-icons chevron_left
+                    .large BACK
               .col.s8.m6.offset-m2
                 .input-field
                   %button.btn.full.submit.large.waves-effect.waves-light
@@ -190,7 +192,7 @@
                     .large SEND FORM
               .col.s2.m3
                 .input-field
-                  %button#anyway.btn.full.large.waves-effect.waves-light.red.darken-4{:style=>"margin-right:24px;display:none",:href=>"#"}
+                  %button#anyway.btn.full.large.waves-effect.waves-light.red.darken-4{:style=>"display:none",:href=>"#"}
                     %i.material-icons.right.large error_outline
                     .large SEND ANYWAY
 
