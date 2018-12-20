@@ -148,6 +148,7 @@ def parse pa
       row[$mapping_slug[ro][sy][me]["mid"].to_i] = v if me
     end
   end
+  row.unshift pa["date"]
   row.unshift Time.now.to_i
   CSV.open("#{Dir.pwd}/public/output/engine_log.csv", "a") do |csv|
     csv << row

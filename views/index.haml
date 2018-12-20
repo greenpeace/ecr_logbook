@@ -40,7 +40,7 @@
                       %i.material-icons.prefix.grey-text.maybe chevron_right
                       %i.material-icons.prefix.teal-text.yes check
                       %i.material-icons.prefix.red-text.text-darken-4.no close
-                      %select{:validate=>true,:name=>id}
+                      %select{:validate=>true,:name=>id,:class=>(dirt[2] ? "ex" : "")}
                         %option{:value=>"nil",:disabled=>true,:selected=>true}= measurement
                         -if specs.has_key? "data"
                           -specs["data"].split("|").each do |option|
@@ -185,9 +185,14 @@
                   %i.material-icons chevron_left
               .col.s8.m6.offset-m2
                 .input-field
-                  %button.btn.full.submit.large
+                  %button.btn.full.submit.large.waves-effect.waves-light
                     %i.material-icons.right.large send
                     .large SEND FORM
+              .col.s2.m3
+                .input-field
+                  %button#anyway.btn.full.large.waves-effect.waves-light.red.darken-4{:style=>"margin-right:24px;display:none",:href=>"#"}
+                    %i.material-icons.right.large error_outline
+                    .large SEND ANYWAY
 
 -content_for :body_end do
   :javascript

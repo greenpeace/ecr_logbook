@@ -42,6 +42,11 @@ function toggleSystem(check) {
   card = check.closest(".card");
   if (check.prop("checked")) {
     me.find("input, select").prop("required", true);
+    if(me.find("select.ex").length > 0) {
+      $.each(me.find("select.ex").find("option").not(":disabled,:selected"),function(i,e){
+        me.find("select.ex").closest(".dev").nextAll(".input-field.devhide."+$(e).val()).find("input").prop("required",false)
+      })
+    }
     card.find(".card-valid i").removeClass("grey-text").addClass("teal-text");
     $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").removeClass("grey-text").addClass("teal-text");
     me.slideDown(function(){
@@ -107,11 +112,19 @@ $("form#daylog button.submit").off("click tap").on("click tap",function(){
     $("form#daylog").submit();
   } else {
     $(".errors").slideDown();
+    $("#anyway").show();
   }
+})
+
+$("form#daylog button#anyway").off("click tap").on("click tap",function(){
+  $("form#daylog").attr("novalidate","novalidate");
+  localStorage.clear();
+  $("form#daylog").submit();
 })
 
 function validateForm(){
   $(".errors").slideUp();
+  $("#anyway").hide();
   $(".errors .content").html("");
   err = 0
   $.each($("form#daylog input").not(".valid"),function(i,e){
@@ -222,7 +235,6 @@ function checkSwitch(input,force) {
 function checkRadio(input,force) {
   $(input).closest(".clearfix").prevAll("i.prefix").hide()
   if ($("input[name="+$(input).attr("name")+"]:checked").length > 0) {
-    console.log(input);
     $(input).closest(".clearfix").prevAll("i.prefix.yes").show();
     $("input[name="+$(input).attr("name")+"]").addClass("valid");
     setLocal($(input).attr("name"),$(input).val(),force);
@@ -351,7 +363,7 @@ function fill(d) {
     input.val(d[1])
   }
   if (input.attr("type") != "hidden") {
-    console.log(input.attr("type"))
+    //console.log(input.attr("type"))
     check = input.closest(".card.system").find(".switch.sys input");
     check.prop("checked",true);
     toggleSystem(check);
