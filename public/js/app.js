@@ -135,12 +135,11 @@ function validateForm(){
         href = "#submit";
         txt = "<b>"+$(e).next("label").text() + "</b> (just above)";
       } else if ($(e).attr("type") == "radio") {
-        console.log(addr)
         href = "#"+ addr.join("/");
         txt = "<b>"+$(e).closest(".clearfix").find("label.fix").text() + "</b> (" + $(e).closest("section").find("h5").text() + " / " + $(e).closest(".card").find(".card-title").text() + ")";
       } else {
         href = "#"+ addr.join("/");
-        txt = "<b>"+$(e).next("label").text() + "</b> (" + $(e).closest("section").find("h5").text() + " / " + $(e).closest(".card").find(".card-title").text() + ")";
+        txt = "<b>"+$(e).nextAll("label").text() + "</b> (" + $(e).closest("section").find("h5").text() + " / " + $(e).closest(".card").find(".card-title").text() + ")";
       }
       $(".errors .card .content").append("<li><a class='white-text navlink' href='"+href+"'>"+txt+"</a></li>")
     }
