@@ -20,7 +20,7 @@ end
 
 post "/log/?" do 
   pp params
-  File.open("#{Dir.pwd}/public/output/#{Date.strptime(params["date"],"%b %d, %Y").strftime("%Y%m%d")}-engine_log.json","w") do |file|
+  File.open("#{Dir.pwd}/public/output/#{Date.strptime(params["date"],"%Y-%m-%d").strftime("%Y%m%d")}-engine_log.json","w") do |file|
     file << JSON.pretty_generate(parse params) #.gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
   end
   return redirect to :thanks
