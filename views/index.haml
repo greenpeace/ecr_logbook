@@ -98,7 +98,7 @@
                       %input{ :id => id,
                         :type => "number",
                         :name => id,
-                        :step => ["cube","bar","cm"].include?(specs["unit"]) ? 0.01 : 1,
+                        :step => ["cube","bar","cm","°C"].include?(specs["unit"]) ? 0.01 : 1,
                         :min  => specs.has_key?("min") ? specs["min"] : nil,
                         :max  => specs.has_key?("max") ? specs["max"] : nil,
                         :validate => true } 
