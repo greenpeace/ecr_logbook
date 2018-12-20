@@ -131,6 +131,9 @@ label.fix {
 
 
 
+a.lube-del {
+  cursor: pointer;
+}
 .range {
   padding-left:45px;
 }

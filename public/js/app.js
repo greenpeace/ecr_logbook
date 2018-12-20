@@ -39,13 +39,13 @@ $("form#daylog input[type=range]").on("change",function(){
 
 function toggleSystem(check) {
   me = check.closest(".card-content").next(".card-action");
-  //console.log(check)
   card = check.closest(".card");
   if (check.prop("checked")) {
-    me.find("input, select")/*.not("input[type=radio], input[type=range]")*/.prop("required", true);
+    me.find("input, select").prop("required", true);
     card.find(".card-valid i").removeClass("grey-text").addClass("teal-text");
     $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").removeClass("grey-text").addClass("teal-text");
     me.slideDown(function(){
+      card = check.closest(".card");
       $.each(me.find(".input-field select"),function(i,e){ checkSelect(e); })
       $.each(me.find(".input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
       $.each(me.find(".input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
@@ -58,6 +58,7 @@ function toggleSystem(check) {
     card.find(".card-valid i").addClass("grey-text").removeClass("teal-text");
     $("#nav-mobile a.navlink[data-href="+card.attr("id")+"] .yes").addClass("grey-text").removeClass("teal-text");
     me.slideUp(function(){
+      card = check.closest(".card");
       $.each(me.find(".input-field select"),function(i,e){ checkSelect(e); })
       $.each(me.find(".input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
       $.each(me.find(".input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
@@ -75,11 +76,9 @@ $("a.lube-add").on("click",function(){
   })
 })
 
-$("a.lube-del").on("click",function(){
-  $.get("/newlube?room="+$(this).closest("section").attr("id"),function(data){
-    $("#modal .modal-content").html(data);
-    $("#modal").modal("open")
-  })
+$("form#daylog").on("click","a.lube-del",function(){
+  token = $(this).attr("id").replace("lube-del-","");
+  delLube(token);
 })
 
 $(".foot-arrows a").on("click",function(){
@@ -104,6 +103,7 @@ $("form#daylog .input-field.dev select").on("change",function(){
 
 $("form#daylog button.submit").off("click tap").on("click tap",function(){
   if (validateForm()) {
+    localStorage.clear();
     $("form#daylog").submit();
   } else {
     $(".errors").slideDown();
@@ -136,27 +136,27 @@ function validateForm(){
 }
 
 $("form#daylog .input-field input[type=number], input.ex").on("blur",function(){
-  checkNumber(this);
+  checkNumber(this,true);
   checkSystem($(this).closest(".card"));
 })
 
 $("form#daylog .input-field input[type=checkbox]").on("change",function(){
-  checkSwitch(this);
+  checkSwitch(this,true);
   checkSystem($(this).closest(".card"));
 })
 
 $("form#daylog .input-field input[type=radio]").on("change",function(){
-  checkRadio(this);
+  checkRadio(this,true);
   checkSystem($(this).closest(".card"));
 })
 
 $("form#daylog .input-field input[type=range]").on("change",function(){
-  checkRange(this);
+  checkRange(this,true);
   checkSystem($(this).closest(".card"));
 })
 
 $("form#daylog .input-field select").on("change",function(){
-  checkSelect(this);
+  checkSelect(this,true);
   checkSystem($(this).closest(".card"));
 })
 
@@ -191,12 +191,12 @@ function checkSystem(card) {
   checkRoom(card.closest("section"));
 }
 
-function checkNumber(input) {
+function checkNumber(input,force) {
   $(input).prevAll("i.prefix").hide()
   if (input.validity.valid === true) {
     $(input).prevAll("i.prefix.yes").show()
     $(input).removeClass("invalid").addClass("valid")
-    setLocal($(input).attr("name"),$(input).val())
+    setLocal($(input).attr("name"),$(input).val(),force)
   } else if (input.validity.valueMissing === true && input.validity.badInput === false) {
     $(input).prevAll("i.prefix.maybe").show()
     $(input).removeClass("invalid").removeClass("valid")
@@ -206,26 +206,26 @@ function checkNumber(input) {
   }
 }
 
-function checkSwitch(input) {
+function checkSwitch(input,force) {
   $(input).closest(".clearfix").prevAll("i.prefix").hide()
   if ($(input).prop("checked")) {
     $(input).closest(".clearfix").prevAll("i.prefix.yes").show()
     $(input).closest(".clearfix").prevAll("checkhide").prop("disabled",true)
-    setLocal($(input).attr("name"),"on");
+    setLocal($(input).attr("name"),"on",force);
   } else {
     $(input).closest(".clearfix").prevAll("i.prefix.maybe").show()
     $(input).closest(".clearfix").prevAll("checkhide").prop("disabled",false)
-    setLocal($(input).attr("name"),"off");
+    setLocal($(input).attr("name"),(force ? "off" : ""),force);
   }
 }
 
-function checkRadio(input) {
+function checkRadio(input,force) {
   $(input).closest(".clearfix").prevAll("i.prefix").hide()
   if ($("input[name="+$(input).attr("name")+"]:checked").length > 0) {
     console.log(input);
     $(input).closest(".clearfix").prevAll("i.prefix.yes").show();
     $("input[name="+$(input).attr("name")+"]").addClass("valid");
-    setLocal($(input).attr("name"),$(input).val());
+    setLocal($(input).attr("name"),$(input).val(),force);
   } else {
     $(input).closest(".clearfix").prevAll("i.prefix.maybe").show()
     $("input[name="+$(input).attr("name")+"]:first").removeClass("valid");
@@ -233,41 +233,43 @@ function checkRadio(input) {
   $("input[name="+$(input).attr("name")+"]").not(":visible").addClass("valid");
 }
 
-function checkRange(input) {
+function checkRange(input,force) {
   $(input).closest(".range").prevAll("i.prefix").hide()
   $(".range-value[data-source="+$(input).attr("id")+"]").text($(input).val())
   if ($(input).val() > 0) {
     $(input).closest(".range").prevAll("i.prefix.yes").show()
-    setLocal($(input).attr("name"),$(input).val());
+    setLocal($(input).attr("name"),$(input).val(),force);
   } else {
     $(input).closest(".range").prevAll("i.prefix.maybe").show()
-    setLocal($(input).attr("name"),$(input).val());
+    setLocal($(input).attr("name"),(force ? 0 : ""),force);
   }
 }
 
-function checkSelect(input) {
+function checkSelect(input,force) {
   $(input).closest(".select-wrapper").prevAll("i.prefix").hide()
   if ($(input).find("option:selected").prop("disabled")) {
     $(input).closest(".select-wrapper").prevAll("i.prefix.maybe").show()
   } else {
     $(input).closest(".select-wrapper").prevAll("i.prefix.yes").show()
-    setLocal($(input).attr("name"),$(input).val())
+    setLocal($(input).attr("name"),$(input).val(),force);
   }
 }
 
 function checkInputs() {
-  $.each($("form#daylog .input-field select"),function(i,e){ checkSelect(e); })
-  $.each($("form#daylog .input-field input[type=number], input.ex"),function(i,e){ checkNumber(e); })
-  $.each($("form#daylog .input-field input[type=checkbox]"),function(i,e){ checkSwitch(e); })
-  $.each($("form#daylog .input-field input[type=radio]"),function(i,e){ checkRadio(e); })
-  $.each($("form#daylog .input-field input[type=range]"),function(i,e){ checkRange(e); })
+  $.each($("form#daylog .input-field select"),function(i,e){ checkSelect(e,false); })
+  $.each($("form#daylog .input-field input[type=number], input.ex"),function(i,e){ checkNumber(e,false); })
+  $.each($("form#daylog .input-field input[type=checkbox]"),function(i,e){ checkSwitch(e,false); })
+  $.each($("form#daylog .input-field input[type=radio]"),function(i,e){ checkRadio(e,false); })
+  $.each($("form#daylog .input-field input[type=range]"),function(i,e){ checkRange(e,false); })
   $.each($("form#daylog .card"),function(i,e){ checkSystem($(e)); })
-  $.each($("form#daylog section.room"),function(i,e){ checkRoom($(e)); })
-  $.each($(".switch.sys input:checked"),function(i,e){ toggleSystem($(e))})
+  //$.each($("form#daylog section.room"),function(i,e){ checkRoom($(e)); })
+  //$.each($(".switch.sys input[type=checkbox]:checked"),function(i,e){ toggleSystem($(e))})
 }
 
-function setLocal(key,value) {
-  localStorage[key] = String(value);
+function setLocal(key,value,force) {
+  if ((value !== null && String(value).length > 0) || force) {
+    localStorage[key] = String(value);
+  }
 }
 
 function addLube(room,data,token) {
@@ -288,13 +290,24 @@ function addLube(room,data,token) {
   html += "<a class='lube-del' id='lube-del-"+token+"'><i class='material-icons red-text text-darken-4'>delete</i></a></td></tr>"
   $("#"+room+"_lubrication .card-action table tbody").append(html)
   $("#"+room+"_lubrication .card-action").slideDown();
-  setLocal("lubrication_"+room+"_"+token,data[0].value+"|"+data[1].value+"|"+data[2].value);
+  setLocal("lubrication_"+room+"_"+token,data[0].value+"|"+data[1].value+"|"+data[2].value,true);
+}
+
+function delLube(token) {
+  tbody = $("#lube-del-"+token).closest("tbody");
+  room = $("#lube-del-"+token).prevAll("input:last").val();
+  $("#lube-del-"+token).closest("tr").remove();
+  lubeTokens.splice(lubeTokens.indexOf(token),1);
+  localStorage.removeItem("lubrication_"+room+"_"+String(token));
+  if (tbody.find("tr").length == 0) {
+    $("#"+room+"_lubrication .card-action").slideUp();
+  }
 }
 
 
 // debug
 
-function serverFill() {
+function fillServer() {
   $.get("/localStorage",function(data){
     data = data.replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
     $.each(data,function(i,e){
@@ -305,7 +318,7 @@ function serverFill() {
   })
 }
 
-function localFill() {
+function fillLocal() {
   for (var i = 0; i < localStorage.length; i++) {
     fill([localStorage.key(i),localStorage.getItem(localStorage.key(i))]);
   }

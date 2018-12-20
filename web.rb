@@ -36,7 +36,6 @@ get "/newlube/?" do
     break
   end
   @data["oils"] = $lubrication["oils"]
-  pp @data
   haml :lube, :layout => false
 end
 
