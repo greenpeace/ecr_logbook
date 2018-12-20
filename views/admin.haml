@@ -23,6 +23,8 @@
           .clearfix
             .left
               %span.card-title Edit previous records
+            .right
+              %a#clear.red.darken-4{:href=>"#",:style=>"font-size:16px;line-height:38px;"} Clear current form
           %form.edit{:method=>"post",:action=>"/edit_previous"}
             .row
               .col.s8.m10
@@ -164,7 +166,9 @@
     $(document).on('change', '.file-field input[type="file"]', function (e) {
       e.preventDefault();
       var file = this.files[0];
-      console.log(file.type);
+    });
+    $("a#clear").on('click tap', function (e) {
+      localStorage.clear();
     });
     var enabledDates = #{@enabledDates};
     function pad(num) {
