@@ -49,12 +49,12 @@
                 .input-field.file-field
                   .btn.red.darken-4
                     %span FILE
-                    %input.file{:type=>"file",:name=>"layout_file"}
+                    %input.file{:type=>"file",:name=>"layout_file","data-mimetype"=>"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
                   .file-path-wrapper
-                    %input.file-path.validate{:type=>"text",:placeholder=>"Upload your layout.csv here!"}
+                    %input.file-path.validate{:type=>"text",:placeholder=>"Upload your layout.xlsx here!"}
               .col.s4.m2
                 .input-field
-                  %button.red.darken-4.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                  %button.red.darken-4.btn-large.btn-floating.waves-effect.waves-light.submit.disabled{:type=>"submit"}
                     %i.material-icons file_upload
 
       .card.mapping#mapping
@@ -70,12 +70,12 @@
                 .input-field.file-field
                   .btn.red.darken-4
                     %span FILE
-                    %input.file{:type=>"file",:name=>"mapping_file"}
+                    %input.file{:type=>"file",:name=>"mapping_file","data-mimetype"=>"text/csv"}
                   .file-path-wrapper
                     %input.file-path.validate{:type=>"text",:placeholder=>"Upload your mapping.csv here!"}
               .col.s4.m2
                 .input-field
-                  %button.red.darken-4.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                  %button.red.darken-4.btn-large.btn-floating.waves-effect.waves-light.submit.disabled{:type=>"submit"}
                     %i.material-icons file_upload
 
       .card.lubrication#lubrication
@@ -91,12 +91,12 @@
                 .input-field.file-field
                   .btn.red.darken-4
                     %span FILE
-                    %input.file{:type=>"file",:name=>"lubrication_file"}
+                    %input.file{:type=>"file",:name=>"lubrication_file","data-mimetype"=>"text/csv"}
                   .file-path-wrapper
                     %input.file-path.validate{:type=>"text",:placeholder=>"Upload your lubrication.csv here!"}
               .col.s4.m2
                 .input-field
-                  %button.red.darken-4.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
+                  %button.red.darken-4.btn-large.btn-floating.waves-effect.waves-light.submit.disabled{:type=>"submit"}
                     %i.material-icons file_upload
 
       .card.history#history
@@ -124,7 +124,8 @@
         cache:false,
         processData:false,
         success:function(data){
-          console.log(data)
+          that[0].reset();
+          that.find("button.submit").addClass("disabled");
           M.toast({html: '<b>Success</b>',classes:"teal"})
         },
         error:function(data){
@@ -152,7 +153,6 @@
           fields = data[0].replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
           $.each(fields,function(i,e){
             e = e.split("=");
-            console.log(e)
             setLocal(e[0],e[1]);
           })
           window.location = "/#update"
@@ -166,9 +166,13 @@
     $(document).on('change', '.file-field input[type="file"]', function (e) {
       e.preventDefault();
       var file = this.files[0];
+      if (file.type == $(this).data("mimetype")) {
+        $(this).closest(".row").find("button.submit").removeClass("disabled")
+      }
     });
     $("a#clear").on('click tap', function (e) {
       localStorage.clear();
+      M.toast({html: '<b>Cleared current form.</b>',classes:"teal"})
     });
     var enabledDates = #{@enabledDates};
     function pad(num) {
