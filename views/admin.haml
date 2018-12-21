@@ -170,9 +170,9 @@
     $(document).on('change', '.file-field input[type="file"]', function (e) {
       e.preventDefault();
       var file = this.files[0];
-      console.log(file.type)
-      console.log($(this).attr("accept"))
-      console.log($(this))
+      //console.log(file.type)
+      //console.log($(this).attr("accept"))
+      //console.log($(this))
       if (file.type == $(this).attr("accept") || true) {
         $(this).closest(".row").find("button.submit").removeClass("disabled")
       }

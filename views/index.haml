@@ -173,12 +173,6 @@
                 .input-field
                   %textarea.materialize-textarea{:name=>"notes"}
                   %label{:for=>"notes"} Notes
-              .col.s12.errors
-                .card.red.darken-4
-                  .card-content
-                    .clearfix
-                      %span.left.title.white-text Following problems encountered:
-                    %ul.content
 
               .col.s2.m1.foot-arrows
                 .input-field
@@ -195,6 +189,13 @@
                   %button#anyway.btn.full.large.waves-effect.waves-light.red.darken-4{:style=>"display:none",:href=>"#"}
                     %i.material-icons.right.large error_outline
                     .large SEND ANYWAY
+
+              .col.s12.errors
+                .card.red.darken-4
+                  .card-content
+                    .clearfix
+                      %span.left.title.white-text Following problems encountered:
+                    %ul.content
 
 -content_for :body_end do
   :javascript
