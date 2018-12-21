@@ -109,6 +109,11 @@ post "/edit_previous/?" do
   unparse JSON.parse(File.read("#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"))
 end
 
+get "/env/?" do
+  @env = env
+  haml :env, :layout=>false
+end
+
 not_found do 
   redirect to "/"
 end
