@@ -49,7 +49,7 @@
                 .input-field.file-field
                   .btn.red.darken-4
                     %span FILE
-                    %input.file{:type=>"file",:name=>"layout_file","data-mimetype"=>"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+                    %input.file{:type=>"file",:name=>"layout_file","accept"=>"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
                   .file-path-wrapper
                     %input.file-path.validate{:type=>"text",:placeholder=>"Upload your layout.xlsx here!"}
               .col.s4.m2
@@ -70,7 +70,7 @@
                 .input-field.file-field
                   .btn.red.darken-4
                     %span FILE
-                    %input.file{:type=>"file",:name=>"mapping_file","data-mimetype"=>"text/csv"}
+                    %input.file{:type=>"file",:name=>"mapping_file","accept"=>"text/csv"}
                   .file-path-wrapper
                     %input.file-path.validate{:type=>"text",:placeholder=>"Upload your mapping.csv here!"}
               .col.s4.m2
@@ -91,7 +91,7 @@
                 .input-field.file-field
                   .btn.red.darken-4
                     %span FILE
-                    %input.file{:type=>"file",:name=>"lubrication_file","data-mimetype"=>"text/csv"}
+                    %input.file{:type=>"file",:name=>"lubrication_file","accept"=>"text/csv"}
                   .file-path-wrapper
                     %input.file-path.validate{:type=>"text",:placeholder=>"Upload your lubrication.csv here!"}
               .col.s4.m2
@@ -167,9 +167,9 @@
       e.preventDefault();
       var file = this.files[0];
       console.log(file.type)
-      console.log($(this).data("mimetype"))
+      console.log($(this).attr("accept"))
       console.log($(this))
-      if (file.type == $(this).data("mimetype")) {
+      if (file.type == $(this).attr("accept")) {
         $(this).closest(".row").find("button.submit").removeClass("disabled")
       }
     });
