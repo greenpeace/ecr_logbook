@@ -169,7 +169,7 @@
       console.log(file.type)
       console.log($(this).attr("accept"))
       console.log($(this))
-      if (file.type == $(this).attr("accept")) {
+      if (file.type == $(this).attr("accept") || true) {
         $(this).closest(".row").find("button.submit").removeClass("disabled")
       }
     });
