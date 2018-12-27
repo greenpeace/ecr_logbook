@@ -107,8 +107,6 @@
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()+" input").prop("required",true)
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()).slideDown();
         if (window.location.hash == "#update") {
-          console.log("local")
-          console.log(localStorage["aux-engine-room_fresh-water-gauge_consumption"])
           window.location.hash = "#pump-steering-gear-rooms"
           fillLocal()
         };

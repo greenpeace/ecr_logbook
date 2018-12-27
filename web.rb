@@ -19,11 +19,16 @@ get "/?" do
 end
 
 post "/log/?" do 
-  pp params
-  File.open("#{Dir.pwd}/public/output/#{Date.strptime(params["date"],"%Y-%m-%d").strftime("%Y%m%d")}-engine_log.json","w") do |file|
+  #pp params
+  begin 
+    date = Date.strptime(params["date"],"%Y-%m-%d")
+  rescue
+    date = Date.strptime(params["date"],"%b %d, %Y")
+  end
+  File.open("#{Dir.pwd}/public/output/#{date.strftime("%Y%m%d")}-engine_log.json","w") do |file|
     file << JSON.pretty_generate(parse params) #.gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
   end
-  return redirect to :thanks
+  return "ack"
 end
 
 get "/newlube/?" do 
@@ -146,7 +151,8 @@ def parse pa
       re[k] = v
     elsif me == "is-currently-working" and v == "on"
       on[ro] << sy
-    elsif on[ro].include? sy
+    else
+      p [ro,sy,me,$mapping_slug[ro][sy][me]["mid"].to_i]
       re[ro] = {} unless re.has_key?(ro)
       re[ro][sy] = {} unless re[ro].has_key?(sy)
       re[ro][sy][me] = v

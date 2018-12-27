@@ -163,7 +163,7 @@
                     %i.material-icons.teal-text{:style=>"font-size:32px;display:none;"} check_circle
               .col.s12.m6
                 .input-field
-                  %input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>Date.today.strftime("%b %d, %Y")}
+                  %input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>Date.today.strftime("%Y-%m-%d")}
                   %label{:for=>"date"} Date
               .col.s12.m6
                 .input-field
@@ -194,7 +194,14 @@
                 .card.red.darken-4
                   .card-content
                     .clearfix
-                      %span.left.title.white-text Following problems encountered:
+                      %span.left.title.white-text Following errors encountered:
+                    %ul.content
+
+              .col.s12.empties
+                .card.teal
+                  .card-content
+                    .clearfix
+                      %span.left.title.white-text Following fields were left blank:
                     %ul.content
 
 -content_for :body_end do

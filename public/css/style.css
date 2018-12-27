@@ -108,7 +108,7 @@ textarea, input[type=text] {
 
 .navbar-fixed { z-index: 9999; }
 
-.errors { display:none; }
+.errors, .empties { display:none; }
 
 .bold { font-weight: bold; }
 

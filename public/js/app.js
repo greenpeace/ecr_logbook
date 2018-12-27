@@ -106,30 +106,43 @@ $("form#daylog .input-field.dev select").on("change",function(){
 
 // Validations
 
-$("form#daylog button.submit").off("click tap").on("click tap",function(){
-  if (validateForm()) {
-    localStorage.clear();
-    $("form#daylog").submit();
+$("form#daylog button.submit").off("click tap").on("click tap",function(e){
+  e.preventDefault();
+  result = validateForm();
+  if (result == [0,0]) {
+    submit();
   } else {
-    $(".errors").slideDown();
+    if (result[0] > 0 ) $(".errors").slideDown();
+    if (result[1] > 0 ) $(".empties").slideDown();
     $("#anyway").show();
   }
 })
 
-$("form#daylog button#anyway").off("click tap").on("click tap",function(){
+$("form#daylog button#anyway").off("click tap").on("click tap",function(e){
+  e.preventDefault();
   $("form#daylog").attr("novalidate","novalidate");
-  localStorage.clear();
-  $("form#daylog").submit();
+  submit();
 })
 
+function submit() {
+  $.post("/log",$("form#daylog").serializeArray(),function(data){
+    if (data == "ack") {
+      localStorage.clear();
+      window.location = "/thanks";
+    } else {
+      M.toast({html: '<b>Error:</b><br/><br/>'+data,classes:"red darken-4"});
+    }
+  })
+}
+
 function validateForm(){
-  $(".errors").slideUp();
+  $(".errors, .empties").slideUp();
   $("#anyway").hide();
   $(".errors .content").html("");
-  err = 0
+  err = 0;
+  emp = 0;
   $.each($("form#daylog input").not(".valid"),function(i,e){
     if (typeof $(e).attr("name") !== "undefined" && $(e).attr("type") !== "hidden" && $(e).attr("type") !== "checkbox") {
-      err ++;
       addr = $(e).attr("name").split("_");
       if (addr.length == 1 ) {
         href = "#submit";
@@ -141,10 +154,16 @@ function validateForm(){
         href = "#"+ addr.join("/");
         txt = "<b>"+$(e).nextAll("label").text() + "</b> (" + $(e).closest("section").find("h5").text() + " / " + $(e).closest(".card").find(".card-title").text() + ")";
       }
-      $(".errors .card .content").append("<li><a class='white-text navlink' href='"+href+"'>"+txt+"</a></li>")
+      if (e.validity.valueMissing) {
+        emp ++;
+        $(".empties .card .content").append("<li><a class='white-text navlink' href='"+href+"'>"+txt+"</a></li>")
+      } else {
+        err ++;
+        $(".errors .card .content").append("<li><a class='white-text navlink' href='"+href+"'>"+txt+"</a></li>")
+      }
     }
   })
-  return err == 0
+  return [err,emp]
 }
 
 $("form#daylog .input-field input[type=number], input.ex").on("blur",function(){
@@ -359,7 +378,11 @@ function fill(d) {
     addLube(room, [{name:"unit",value:data[0]},{name:"oil_type",value:data[1]},{name:"amount",value:data[2]}],token);
   } else {
     input = $("input[name="+d[0]+"]");
-    input.val(d[1])
+    if (input.attr("type") == "radio") {
+      $("input[name="+d[0]+"][value="+d[1]+"]").prop("checked",true)
+    } else {
+      input.val(d[1])
+    }
   }
   if (input.attr("type") != "hidden") {
     //console.log(input.attr("type"))
