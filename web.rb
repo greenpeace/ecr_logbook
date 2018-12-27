@@ -49,23 +49,21 @@ get "/thanks/?" do
 end
 
 get "/admin/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
   @enabledDates = get_dates.to_json
   haml :admin
 end
 
 post "/download_log_sheet/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
   send_file output("#{Dir.pwd}/public/output/#{params["date"].gsub(/-/,'')}-engine_log.json"), filename: "#{params["date"].gsub(/-/,'')}-engine_log.xlsx"
 end
 
 get "/current_layout/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+  pass unless access
   send_file "#{Dir.pwd}/lib/layouts/layout.xlsx", filename: "layout.xlsx"
 end
 
 post "/update_layout/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+  pass unless access
   oldfile = "#{Dir.pwd}/lib/layouts/old/layout_#{Time.now.strftime("%y%m%d%H%M%S")}.xlsx"
   `mv #{Dir.pwd}/lib/layouts/layout.xlsx #{oldfile}`
   `mv #{params['layout_file']['tempfile'].path} #{Dir.pwd}/lib/layouts/layout.xlsx`
@@ -73,12 +71,12 @@ post "/update_layout/?" do
 end
 
 get "/current_mapping/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+  pass unless access
   send_file "#{Dir.pwd}/lib/mappings/mapping.csv", filename: "mapping.csv"
 end
 
 post "/update_mapping/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+  pass unless access
   oldfile = "#{Dir.pwd}/lib/mappings/old/mapping_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
   `mv #{Dir.pwd}/lib/mappings/mapping.csv #{oldfile}`
   `mv #{params['mapping_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/mapping.csv`
@@ -92,12 +90,12 @@ post "/update_mapping/?" do
 end
 
 get "/current_lubrication/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+  pass unless access
   send_file "#{Dir.pwd}/lib/mappings/lubrication.csv", filename: "lubrication.csv"
 end
 
 post "/update_lubrication/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+  pass unless access
   oldfile = "#{Dir.pwd}/lib/mappings/old/lubrication_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
   `mv #{Dir.pwd}/lib/mappings/lubrication.csv #{oldfile}`
   `mv #{params['lubrication_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/lubrication.csv`
@@ -110,7 +108,6 @@ post "/update_lubrication/?" do
 end
 
 post "/edit_previous/?" do 
-  pass unless request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
   unparse JSON.parse(File.read("#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"))
 end
 
@@ -135,6 +132,15 @@ $sitename = "#{$shipabbr} Engine Room Log"
 $title = $sitename
 $domain = "//daylog.myez.gl3"
 $description = ""
+
+def access 
+  if env.has_key?("HTTP_X_FORWARDED_FOR")
+    ip = env["HTTP_X_FORWARDED_FOR"]
+  else
+    ip = env["REMOTE_ADDR"]
+  end
+  ip.match(/^192\.168\.212\.\d+/) or ip.match(/^127\.0\.0\.1/)
+end
 
 def parse pa
   re = {}

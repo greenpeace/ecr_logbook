@@ -39,10 +39,6 @@
                 %span.today= Date.today.strftime('%a, %b %d')
             %li.no-padding
               %ul.collapsible.collapsible-accordion
-                %li.bold
-                  %a.navlink.waves-effect.waves-teal{:href=>"/admin","data-href"=>"admin","data-target"=>"admin",:style=>"padding-left:52px;"} ADMIN
-                %li
-                  .divider
                 -$mapping.each do |room,systems|
                   %li.bold
                     %a.collapsible-header.waves-effect.waves-teal{"data-href"=>room.slug}
@@ -60,6 +56,10 @@
                 %li.bold
                   %a.navlink.waves-effect.waves-teal{:href=>"/#submit","data-href"=>"#submit",:style=>"padding-left:52px;"} 
                     Submit
+                %li
+                  .divider
+                %li.bold
+                  %a.navlink.waves-effect.waves-teal{:href=>"/admin","data-href"=>"admin","data-target"=>"admin",:style=>"padding-left:52px;"} ADMIN
           %a.sidenav-trigger{"data-target" => "nav-mobile", :href => "#", :style=>"margin: 0 -2px;"}
             %i.material-icons menu
 
