@@ -205,7 +205,6 @@ end
 def parse_mapping
   begin
     lube = {"oils" => []}
-    
 
     CSV.read("#{Dir.pwd}/lib/mappings/lubrication.csv").each_with_index do |row,ind|
       next if ind == 0
@@ -230,6 +229,7 @@ def parse_mapping
       data[row[1]][row[2]][meas]["notes"] = row[8] if row[8] and row[8].length > 0
       data[row[1]][row[2]][meas]["data"] = row[9] if row[9] and row[9].length > 0
       data[row[1]][row[2]][meas]["mid"] = row[0].to_i if row[0] and row[0].length > 0
+      data[row[1]][row[2]][meas]["port"] = row[10].to_i if row[10] and row[10].length > 0
 
       data_slug[row[1].slug] = {} unless data_slug.has_key? row[1].slug
       data_slug[row[1].slug][row[2].slug] = {} unless data_slug[row[1].slug].has_key? row[2].slug
@@ -243,6 +243,7 @@ def parse_mapping
       data_slug[row[1].slug][row[2].slug][meas]["notes"] = row[8] if row[8] and row[8].length > 0
       data_slug[row[1].slug][row[2].slug][meas]["data"] = row[9] if row[9] and row[9].length > 0
       data_slug[row[1].slug][row[2].slug][meas]["mid"] = row[0].to_i if row[0] and row[0].length > 0
+      data_slug[row[1].slug][row[2].slug][meas]["port"] = row[10].to_i if row[10] and row[10].length > 0
     end
 
     File.open("#{Dir.pwd}/lib/mappings/lubrication.json","w") {|f| f << JSON.pretty_generate(lube)}

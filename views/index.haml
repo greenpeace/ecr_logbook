@@ -1,6 +1,21 @@
 %form#daylog{:method=>"post",:action=>"/log"}
   %section#main
-    %h5{:style=>"display:none;"} Hello world
+    .row
+      .col.s12.m6.offset-m3
+        %h5.text-center Good morning!
+        %ul
+          %li.margin-10
+            %a.btn.waves-teal.full#continue Continue round
+            %br/
+            %br/
+          %li.margin-10
+            %a.btn.waves-teal.full#sea Start round at sea
+            %br/
+            %br/
+          %li.margin-10
+            %a.btn.waves-teal.full#port Start round in port
+            %br/
+            %br/
   -index = 0
   -$mapping.each do |room,systems|
     %section{:id=>room.slug}
@@ -24,7 +39,7 @@
               .card-action.off
                 -measurements.each do |measurement,specs|
                   -id = "#{room.slug}_#{system.slug}_#{measurement.slug}"
-                  -dirt = [nil,nil,nil]
+                  -dirt = [nil,nil,""]
                   -if specs.has_key? "data" 
                     -if specs["unit"] == "enum"
                       -dirt = [nil,nil,"dev"]
@@ -33,6 +48,10 @@
                       -measurement = measurement.sub(/^#{specs["data"]}\s+/,"")
                   -elsif specs["unit"] == "binary"
                     -dirt = [nil,nil,"sw"]
+                  -if specs["port"] == 0
+                    -d = dirt[2].split(/\s+/)
+                    -d << "sea"
+                    -dirt = [dirt[0],dirt[1],d.join(" ")]
 
                   .input-field{:style=>dirt[0],"data-name"=>dirt[1],:class=>dirt[2]}
 
@@ -209,3 +228,20 @@
     $("#date").datepicker( {
       format: 'yyyy-mm-dd'
     });
+    if (localStorage.length <= 1) {
+      $("#continue").attr("disabled",true);
+      $("#sea").attr("disabled",false);
+      $("#port").attr("disabled",false);
+    } else {
+      $("#continue").attr("disabled",false);
+      $("#sea").attr("disabled",true);
+      $("#port").attr("disabled",true);
+    }
+    $("#sea").on("click",function(){
+      atSea();
+      yesterday();
+    })
+    $("#port").on("click",function(){
+      inPort();
+      yesterday();
+    })

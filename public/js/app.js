@@ -205,7 +205,7 @@ function checkRoom(room) {
 }
 
 function checkSystem(card) {
-  total = card.find("input:required[type=number], select:required").length;
+  total = card.find("input:required[type=number], select:required").length - card.find("input:disabled[type=number], select:disabled").length;
   valid = card.find("input.valid:required[type=number]").length + card.find("ul.select-dropdown li.selected").not("ul.select-dropdown li.disabled").length;
   //console.log(card.attr("id")+": "+valid+" / "+total)
   if (valid < total) {
@@ -321,6 +321,46 @@ function addLube(room,data,token) {
   $("#"+room+"_lubrication .card-action table tbody").append(html)
   $("#"+room+"_lubrication .card-action").slideDown();
   setLocal("lubrication_"+room+"_"+token,data[0].value+"|"+data[1].value+"|"+data[2].value,true);
+}
+
+function atSea() {
+  $(".input-field.sea input").prop("disabled",false);
+  $(".input-field.sea").show();
+}
+
+function inPort() {
+  $(".input-field.sea input").prop("disabled",true);
+  $(".input-field.sea").hide();
+}
+
+function yesterday() {
+  $.ajax({
+    url:"/edit_previous",
+    type:'POST',
+    data: "date=yesterday",
+    contentType:false,
+    cache:false,
+    processData:false,
+    success:function(data){
+      data = JSON.parse(data);
+      localStorage.clear();
+      $.each(data[1],function(i,e){
+        addLube(e[0],e[1])
+      })
+      fields = data[0].replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
+      $.each(fields,function(i,e){
+        e = e.split("=");
+        setLocal(e[0],e[1]);
+      })
+      window.location = "/#update"
+      init(window.location.hash);
+    },
+    error:function(data){
+      M.toast({html: '<b>Could not load yesterday\'s values</b>',classes:"red darken-4"})
+      window.location = "/#steering-gear-room"
+      init(window.location.hash);
+    }
+  });
 }
 
 function delLube(token) {

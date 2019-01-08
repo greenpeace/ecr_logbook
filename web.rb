@@ -108,7 +108,13 @@ post "/update_lubrication/?" do
 end
 
 post "/edit_previous/?" do 
-  unparse JSON.parse(File.read("#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"))
+  params["date"] = (Date.today-1).strftime("%Y-%m-%d") if params["date"] == "yesterday"
+  file = "#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"
+  if File.exists? file
+    unparse JSON.parse(File.read(file))
+  else
+    404
+  end
 end
 
 get "/env/?" do

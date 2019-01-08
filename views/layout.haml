@@ -17,7 +17,7 @@
     .navbar-fixed
       %nav.teal{:role => "navigation"}
         .nav-wrapper.container
-          %a#logo-container.brand-logo{:href => "/#"}
+          %a#logo-container.brand-logo{:href => "/"}
             %span.hide-on-med-and-down Engine Room Daylog &nbsp;
             %small.title
           %ul.right.hide-on-med-and-down
@@ -107,7 +107,7 @@
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()+" input").prop("required",true)
         $(".input-field.devhide."+$("form#daylog .input-field.dev select option:selected").val()).slideDown();
         if (window.location.hash == "#update") {
-          window.location.hash = "#pump-steering-gear-rooms"
+          window.location.hash = "#steering-gear-room"
           fillLocal()
         };
         checkInputs();
