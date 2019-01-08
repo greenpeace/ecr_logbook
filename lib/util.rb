@@ -270,9 +270,13 @@ end
 def get_dates
   dates = []
   Dir.foreach("#{Dir.pwd}/public/output") do |file|
-    if file.match(/\.json$/)
-      date = file.match(/^\d{8}/)[0]
-      dates << "#{date[0..3]}-#{date[4..5]}-#{date[6..7]}"
+    begin
+      if file.match(/\.json$/)
+        date = file.match(/^\d{8}/)[0]
+        dates << "#{date[0..3]}-#{date[4..5]}-#{date[6..7]}"
+      end
+    rescue
+      next
     end
   end
   dates

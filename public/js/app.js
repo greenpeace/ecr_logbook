@@ -255,7 +255,7 @@ function checkRadio(input,force) {
   if ($("input[name="+$(input).attr("name")+"]:checked").length > 0) {
     $(input).closest(".clearfix").prevAll("i.prefix.yes").show();
     $("input[name="+$(input).attr("name")+"]").addClass("valid");
-    setLocal($(input).attr("name"),$(input).val(),force);
+    if (force) setLocal($(input).attr("name"),$(input).val(),force);
   } else {
     $(input).closest(".clearfix").prevAll("i.prefix.maybe").show()
     $("input[name="+$(input).attr("name")+"]:first").removeClass("valid");
@@ -352,6 +352,7 @@ function yesterday() {
         e = e.split("=");
         setLocal(e[0],e[1]);
       })
+      M.updateTextFields();
       window.location = "/#update"
       init(window.location.hash);
     },
@@ -418,9 +419,12 @@ function fill(d) {
     data = d[1].split("|")
     addLube(room, [{name:"unit",value:data[0]},{name:"oil_type",value:data[1]},{name:"amount",value:data[2]}],token);
   } else {
+    console.log(d)
     input = $("input[name="+d[0]+"]");
     if (input.attr("type") == "radio") {
       $("input[name="+d[0]+"][value="+d[1]+"]").prop("checked",true)
+    } else if (d[0] == "notes") {
+      $("textarea[name=notes]").val(d[1])
     } else {
       input.val(d[1])
     }

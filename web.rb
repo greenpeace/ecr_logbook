@@ -199,3 +199,25 @@ def unparse pa
   end
   [re.join("&"),lube].to_json
 end
+
+=begin
+def parse_log log
+  result = []
+  log.shift
+  date = log.shift
+  user = log.shift
+  log.unshift nil
+end
+
+def find_in_log date
+  log = nil
+  CSV.read("#{Dir.pwd}/public/output/engine_log.csv").reverse.each do |row|
+    if row[1] == date.strftime("%Y-%m-%d")
+      log = row
+      break
+    end
+  end
+  log
+end
+=end
+
