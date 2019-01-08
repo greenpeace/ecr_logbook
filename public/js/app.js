@@ -360,6 +360,7 @@ function fill(d) {
   if (d[1] == "on") {
     input = $("input[name="+d[0]+"]");
     input.prop("checked",true)
+    empty = false;
   } else if (d[0].match(/_running/)) {
     $("select[name="+d[0]+"] option[value="+d[1]+"]").prop("selected",true)
     input = $("select[name="+d[0]+"]");
@@ -384,7 +385,8 @@ function fill(d) {
       input.val(d[1])
     }
   }
-  if (input.attr("type") != "hidden") {
+  var empty = ((input.attr("type")=="range" && d[1] == 0) || (input.attr("type")=="checkbox" && d[1] == "off"))
+  if (input.attr("type") != "hidden" && !empty) {
     //console.log(input.attr("type"))
     check = input.closest(".card.system").find(".switch.sys input");
     check.prop("checked",true);
