@@ -10,6 +10,11 @@ function init(element) {
   $("#daylog section").hide();
   $(section).show();
   $("main").show();
+  if (localStorage.status == "in_port" || $("input[name=status]").val() == "in_port") {
+    inPort();
+  } else {
+    atSea();
+  }
   M.updateTextFields();
   if(typeof card != "undefined") {
     $(document).scrollTop( $(".card."+card).offset().top - 56 );
@@ -109,9 +114,12 @@ $("form#daylog .input-field.dev select").on("change",function(){
 $("form#daylog button.submit").off("click tap").on("click tap",function(e){
   e.preventDefault();
   result = validateForm();
-  if (result == [0,0]) {
+  if (result[0] + result[1] == 0) {
+    console.log("sub")
     submit();
   } else {
+    console.log("nosub")
+    console.log(result)
     if (result[0] > 0 ) $(".errors").slideDown();
     if (result[1] > 0 ) $(".empties").slideDown();
     $("#anyway").show();
@@ -125,12 +133,22 @@ $("form#daylog button#anyway").off("click tap").on("click tap",function(e){
 })
 
 function submit() {
+  disabled = []
+  $.each($("input[type=range]"),function(i,e){
+    if ( $(e).val() == 0 && $(e).closest(".card-action").hasClass("off")) {
+      disabled.push(e)
+      $(e).prop("disabled",true);
+    }
+  })
   $.post("/log",$("form#daylog").serializeArray(),function(data){
     if (data == "ack") {
       localStorage.clear();
       window.location = "/thanks";
     } else {
       M.toast({html: '<b>Error:</b><br/><br/>'+data,classes:"red darken-4"});
+      $.each(disabled,function(i,e){
+        $(e).prop("disabled",false);
+      })
     }
   })
 }
@@ -139,12 +157,13 @@ function validateForm(){
   $(".errors, .empties").slideUp();
   $("#anyway").hide();
   $(".errors .content").html("");
+  $(".empties .content").html("");
   err = 0;
   emp = 0;
   $.each($("form#daylog input").not(".valid"),function(i,e){
     if (typeof $(e).attr("name") !== "undefined" && $(e).attr("type") !== "hidden" && $(e).attr("type") !== "checkbox") {
       addr = $(e).attr("name").split("_");
-      if (addr.length == 1 ) {
+      if (addr.length == 1 || addr[0].match(/_port$/)) {
         href = "#submit";
         txt = "<b>"+$(e).next("label").text() + "</b> (just above)";
       } else if ($(e).attr("type") == "radio") {
@@ -225,6 +244,9 @@ function checkSystem(card) {
 function checkNumber(input,force) {
   $(input).prevAll("i.prefix").hide()
   if (input.validity.valid === true) {
+    if ($(input).closest("section").attr("id") == "submit") {
+      console.log($(input).attr("name"))
+    }
     $(input).prevAll("i.prefix.yes").show()
     $(input).removeClass("invalid").addClass("valid")
     setLocal($(input).attr("name"),$(input).val(),force)
@@ -324,42 +346,55 @@ function addLube(room,data,token) {
 }
 
 function atSea() {
+  setLocal("status","at_sea");
   $(".input-field.sea input").prop("disabled",false);
   $(".input-field.sea").show();
+  $(".input-field.port input").prop("disabled",true);
+  $(".input-field.port").hide();
+  $(".card.system").show();
 }
 
 function inPort() {
+  setLocal("status","in_port");
   $(".input-field.sea input").prop("disabled",true);
   $(".input-field.sea").hide();
+  $(".input-field.port input").prop("disabled",false);
+  $(".input-field.port").show();
+  $.each($(".card.system"),function(i,e){
+    if ($(e).find(".input-field").length == $(e).find(".input-field.sea").length) {
+      $(e).hide();
+    }
+  })
 }
 
 function yesterday() {
   $.ajax({
     url:"/edit_previous",
     type:'POST',
-    data: "date=yesterday",
+    data: {date:"yesterday"},
     contentType:false,
     cache:false,
     processData:false,
     success:function(data){
-      data = JSON.parse(data);
-      localStorage.clear();
-      $.each(data[1],function(i,e){
-        addLube(e[0],e[1])
-      })
-      fields = data[0].replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
-      $.each(fields,function(i,e){
-        e = e.split("=");
-        setLocal(e[0],e[1]);
-      })
-      M.updateTextFields();
-      window.location = "/#update"
-      init(window.location.hash);
-    },
-    error:function(data){
-      M.toast({html: '<b>Could not load yesterday\'s values</b>',classes:"red darken-4"})
-      window.location = "/#steering-gear-room"
-      init(window.location.hash);
+      if (data == "{}") {
+        M.toast({html: '<b>Could not load yesterday\'s values</b>',classes:"red darken-4"})
+        window.location = "/#steering-gear-room"
+        init(window.location.hash);
+      } else {
+        data = JSON.parse(data);
+        localStorage.clear();
+        $.each(data[1],function(i,e){
+          addLube(e[0],e[1])
+        })
+        fields = data[0].replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
+        $.each(fields,function(i,e){
+          e = e.split("=");
+          setLocal(e[0],e[1]);
+        })
+        M.updateTextFields();
+        window.location = "/#update"
+        init(window.location.hash);
+      }
     }
   });
 }
@@ -419,7 +454,7 @@ function fill(d) {
     data = d[1].split("|")
     addLube(room, [{name:"unit",value:data[0]},{name:"oil_type",value:data[1]},{name:"amount",value:data[2]}],token);
   } else {
-    console.log(d)
+    //console.log(d)
     input = $("input[name="+d[0]+"]");
     if (input.attr("type") == "radio") {
       $("input[name="+d[0]+"][value="+d[1]+"]").prop("checked",true)

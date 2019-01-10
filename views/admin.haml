@@ -150,21 +150,22 @@
         cache:false,
         processData:false,
         success:function(data){
-          data = JSON.parse(data);
-          localStorage.clear();
-          $.each(data[1],function(i,e){
-            addLube(e[0],e[1])
-          })
-          fields = data[0].replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
-          $.each(fields,function(i,e){
-            e = e.split("=");
-            setLocal(e[0],e[1]);
-          })
-          window.location = "/#update"
-          M.toast({html: '<b>Loaded previous recording.</b>',classes:"teal"})
-        },
-        error:function(data){
-          M.toast({html: '<b>Error</b>',classes:"red darken-4"})
+          if (data == "{}") {
+            M.toast({html: '<b>Error</b>',classes:"red darken-4"})
+          } else {
+            data = JSON.parse(data);
+            localStorage.clear();
+            $.each(data[1],function(i,e){
+              addLube(e[0],e[1])
+            })
+            fields = data[0].replace(/^\s*"/,"").replace(/"\s*$/,"").split("&")
+            $.each(fields,function(i,e){
+              e = e.split("=");
+              setLocal(e[0],e[1]);
+            })
+            window.location = "/#update"
+            M.toast({html: '<b>Loaded previous recording.</b>',classes:"teal"})
+          }
         }
       });
     })

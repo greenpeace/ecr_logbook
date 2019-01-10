@@ -189,6 +189,19 @@
                   %input.ex{:validate=>true,:required=>true,:name=>"user",:type=>"text"}
                   %label{:for=>"date"} Duty engineer
               .col.s12
+                .input-field.port
+                  %input{:name=>"status",:type=>"hidden"}
+                  %input.ex{:validate=>true,:required=>true,:name=>"port",:type=>"text"}
+                  %label{:for=>"port"} Port
+              .col.s12.m6
+                .input-field.sea
+                  %input.ex{:validate=>true,:required=>true,:name=>"from_port",:type=>"text"}
+                  %label{:for=>"from_port"} From
+              .col.s12.m6
+                .input-field.sea
+                  %input.ex{:validate=>true,:required=>true,:name=>"to_port",:type=>"text"}
+                  %label{:for=>"to_port"} To
+              .col.s12
                 .input-field
                   %textarea.materialize-textarea{:name=>"notes"}
                   %label{:for=>"notes"} Notes
@@ -228,7 +241,7 @@
     $("#date").datepicker( {
       format: 'yyyy-mm-dd'
     });
-    if (localStorage.length <= 1) {
+    if (localStorage.length <= 2) {
       $("#continue").attr("disabled",true);
       $("#sea").attr("disabled",false);
       $("#port").attr("disabled",false);

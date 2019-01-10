@@ -19,7 +19,6 @@ get "/?" do
 end
 
 post "/log/?" do 
-  #pp params
   begin 
     date = Date.strptime(params["date"],"%Y-%m-%d")
   rescue
@@ -108,12 +107,14 @@ post "/update_lubrication/?" do
 end
 
 post "/edit_previous/?" do 
-  params["date"] = (Date.today-1).strftime("%Y-%m-%d") if params["date"] == "yesterday"
+  p params
+  params["date"] = (Date.today-1).strftime("%Y-%m-%d") if params["date"] == "yesterday" or not params.has_key?("date")
+  p params
   file = "#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"
   if File.exists? file
     unparse JSON.parse(File.read(file))
   else
-    404
+    "{}"
   end
 end
 
@@ -155,10 +156,8 @@ def parse pa
   pa.each do |k,v|
     next unless v and v.to_s.length > 0
     ro, sy, me = *k.split("_")
-    if ["date","user"].include? k
+    if ["date","user","port","from_port","to_port","status","notes"].include? k
       re[k] = v
-    elsif ["notes"].include? k
-      re[k] = " \n#{v}"
     elsif ["lube"].include? k
       re[k] = v
     elsif me == "is-currently-working" and v == "on"
