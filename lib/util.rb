@@ -130,6 +130,7 @@ def output srcfile
   end
 
 
+  puts srcfile
   src = JSON.parse(File.read(srcfile))
   yday = Date.parse(srcfile.split("/")[-1].split("-")[0], "%Y%m%d") - 1
   yfile = srcfile.sub(/\d{8}/,yday.strftime("%Y%m%d"))
