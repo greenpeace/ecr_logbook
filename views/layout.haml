@@ -21,7 +21,7 @@
             %span.hide-on-med-and-down Engine Room Daylog &nbsp;
             %small.title
           %ul.right.hide-on-med-and-down
-            -if request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+            -if access
               %li.bold
                 %a{:href=>"/admin","data-target"=>"admin"} ADMIN
             %li.bold
