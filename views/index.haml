@@ -108,7 +108,7 @@
                       %br/
                       %br/
                       .relative.range
-                        %input.scale.valid{:type=>"range", :name=>id, :id=>id, step=>"0.1", :min=>(specs.has_key?("min") ? specs["min"] : 0), :max=>(specs.has_key?("max") ? specs["max"] : 10), :value=>0}
+                        %input.scale.valid{:type=>"range", :name=>id, :id=>id, :step=>"0.1", :min=>(specs.has_key?("min") ? specs["min"] : 0), :max=>(specs.has_key?("max") ? specs["max"] : 10), :value=>0}
 
                     -else
                       %i.material-icons.prefix.grey-text.maybe chevron_right
