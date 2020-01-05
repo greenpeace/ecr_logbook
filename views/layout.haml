@@ -24,7 +24,7 @@
           %ul.right.hide-on-med-and-down
             %li.bold
               %a{:href=>"/dash","data-target"=>"dash"} DASHBOARD
-            -if request.ip.match(/^192\.168\.212\.\d+/) or request.ip.match(/^127\.0\.0\.1/)
+            -if access
               %li.bold
                 %a{:href=>"/admin","data-target"=>"admin"} ADMIN
             %li.bold

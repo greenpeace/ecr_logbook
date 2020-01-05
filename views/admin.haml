@@ -150,7 +150,7 @@
     $(document).on('submit', 'form.upload', function (e) {
       e.preventDefault();
       that = $(this)
-      console.log(this)
+      //console.log(this)
       $.ajax({
         url:that.attr("action"),
         type:'POST',
@@ -175,7 +175,7 @@
     $(document).on('submit', 'form.edit', function (e) {
       e.preventDefault();
       that = $(this)
-      console.log(this)
+      //console.log(this)
       $.ajax({
         url:that.attr("action"),
         type:'POST',

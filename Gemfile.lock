@@ -70,7 +70,7 @@ GEM
       sinatra (>= 1.2.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    unicode_utils (1.4.0)
+    unidecoder (1.1.2)
 
 PLATFORMS
   ruby
@@ -83,7 +83,7 @@ DEPENDENCIES
   sinatra
   sinatra-contrib
   tux
-  unicode_utils
+  unidecoder
 
 BUNDLED WITH
    1.17.1

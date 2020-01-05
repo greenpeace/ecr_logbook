@@ -194,7 +194,7 @@ def access
   else
     ip = env["REMOTE_ADDR"]
   end
-  ip.match(/^192\.168\.212\.(199|181)$/) or ip.match(/^127\.0\.0\.1$/)
+  ip.match(/^192\.168\.212\.(199|181|25)$/) or ip.match(/^127\.0\.0\.1$/) or ip.match("::1")
 end
 
 def parse pa
