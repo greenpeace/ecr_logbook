@@ -260,9 +260,62 @@ def parse_mapping
   true
 end
 
+def find_id id
+  $mapping.each do |k,v|
+    v.each do |kk,vv|
+      vv.each do |kkk,vvv|
+        if vvv["mid"] === id
+          return [k,kk,kkk]
+        end
+      end
+    end
+  end
+  []
+end
+
+def parse_csv types
+  types = [types] unless types.is_a?(Array)
+  types.map! {|t| t.to_i }
+  result = {}
+  dates = []
+  csv = CSV.read("#{Dir.pwd}/public/output/engine_log.csv")
+  total = csv.length
+  csv.reverse.each do |row|
+    begin
+      date = Date.parse(row[1])
+    rescue => e
+      p row
+      puts e.to_s
+      next
+    end
+    if dates.include?(date)
+      next
+    elsif dates.any? and (dates.last - date).to_i > 1
+      ((dates.last - date).to_i - 1).times do |d|
+      end
+      next
+    end
+    dates << date
+    types.each_with_index do |type|
+      val = row[type+2]
+      if val and val.match /\A[-+]?[0-9]+\Z/
+        val = val.to_i
+      elsif val and  val.match /\A[-+]?[0-9]+\.?[0-9]*\Z/
+        val = val.to_f
+      end
+      name = find_id(type)[-1] || "x"
+      result[name] = [name] unless result.has_key?(name)
+      result[name] << val
+    end
+  end
+
+  {:data=>{:columns=>result.values},:line=>{:connect_null=>false}}
+  result.values
+end
+
 def unit_sign u
-  if ["C","deg","percent"].include?(u)
-    u = {"C"=>"°C","deg"=>"°","percent"=>"%"}[u]
+  if ["C","deg","percent","cube"].include?(u)
+    u = {"C"=>"°C","deg"=>"°","percent"=>"%","cube"=>"m³"}[u]
   end
   u
 end

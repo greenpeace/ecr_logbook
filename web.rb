@@ -18,6 +18,15 @@ get "/?" do
   haml :index
 end
 
+get "/dash/?" do 
+  haml :dash
+end
+
+post "/chart/?" do 
+  pp params
+  parse_csv(params["id"]).to_json
+end
+
 post "/log/?" do 
   begin 
     date = Date.strptime(params["date"],"%Y-%m-%d")
@@ -48,7 +57,25 @@ get "/thanks/?" do
 end
 
 get "/admin/?" do 
-  @enabledDates = get_dates.to_json
+  @enabledDates = get_dates
+  @layoutDates = []
+  @mappingDates = []
+  @lubeDates = []
+  Dir.foreach("#{Dir.pwd}/lib/layouts/old").each do |f|
+    if f.match(/^layout_\d{12}.xlsx/)
+      f = f.gsub(/\D/,"")
+      @layoutDates << "20#{f[0..1]}-#{f[2..3]}-#{f[4..5]}"
+    end
+  end
+  Dir.foreach("#{Dir.pwd}/lib/mappings/old").each do |f|
+    if f.match(/^mapping_\d{12}.csv/)
+      f = f.gsub(/\D/,"")
+      @mappingDates << "20#{f[0..1]}-#{f[2..3]}-#{f[4..5]}"
+    elsif f.match(/^lubrication_\d{12}.csv/)
+      f = f.gsub(/\D/,"")
+      @lubeDates << "20#{f[0..1]}-#{f[2..3]}-#{f[4..5]}"
+    end
+  end
   haml :admin
 end
 
@@ -56,28 +83,42 @@ post "/download_log_sheet/?" do
   send_file output("#{Dir.pwd}/public/output/#{params["date"].gsub(/-/,'')}-engine_log.json"), filename: "#{params["date"].gsub(/-/,'')}-engine_log.xlsx"
 end
 
-get "/current_layout/?" do 
+post "/download_layout/?" do 
   pass unless access
-  send_file "#{Dir.pwd}/lib/layouts/layout.xlsx", filename: "layout.xlsx"
+  filename = nil
+  Dir.foreach("#{Dir.pwd}/lib/layouts/old").sort.each do |f|
+    if f.match(/^layout_#{params["date"].gsub("-","")[2..-1]}\d{6}.xlsx$/)
+      filename = f
+    end
+  end
+  return redirect back unless filename
+  send_file "#{Dir.pwd}/lib/layouts/old/#{filename}", filename: filename
 end
 
 post "/update_layout/?" do 
   pass unless access
   oldfile = "#{Dir.pwd}/lib/layouts/old/layout_#{Time.now.strftime("%y%m%d%H%M%S")}.xlsx"
-  `mv #{Dir.pwd}/lib/layouts/layout.xlsx #{oldfile}`
+  `mv #{params['layout_file']['tempfile'].path} #{oldfile}`
   `mv #{params['layout_file']['tempfile'].path} #{Dir.pwd}/lib/layouts/layout.xlsx`
   "ok" 
 end
 
-get "/current_mapping/?" do 
+post "/download_mapping/?" do 
   pass unless access
-  send_file "#{Dir.pwd}/lib/mappings/mapping.csv", filename: "mapping.csv"
+  filename = nil
+  Dir.foreach("#{Dir.pwd}/lib/mappings/old").sort.each do |f|
+    if f.match(/^mapping_#{params["date"].gsub("-","")[2..-1]}\d{6}.csv$/)
+      filename = f
+    end
+  end
+  return redirect back unless filename
+  send_file "#{Dir.pwd}/lib/mappings/old/#{filename}", filename: filename
 end
 
 post "/update_mapping/?" do 
   pass unless access
   oldfile = "#{Dir.pwd}/lib/mappings/old/mapping_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
-  `mv #{Dir.pwd}/lib/mappings/mapping.csv #{oldfile}`
+  `mv #{params['mapping_file']['tempfile'].path} #{oldfile}`
   `mv #{params['mapping_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/mapping.csv`
   e = parse_mapping
   if e == true
@@ -88,15 +129,22 @@ post "/update_mapping/?" do
   end
 end
 
-get "/current_lubrication/?" do 
+post "/download_lube/?" do 
   pass unless access
-  send_file "#{Dir.pwd}/lib/mappings/lubrication.csv", filename: "lubrication.csv"
+  filename = nil
+  Dir.foreach("#{Dir.pwd}/lib/mappings/old").sort.each do |f|
+    if f.match(/^lubrication_#{params["date"].gsub("-","")[2..-1]}\d{6}.csv$/)
+      filename = f
+    end
+  end
+  return redirect back unless filename
+  send_file "#{Dir.pwd}/lib/mappings/old/#{filename}", filename: filename
 end
 
 post "/update_lubrication/?" do 
   pass unless access
   oldfile = "#{Dir.pwd}/lib/mappings/old/lubrication_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
-  `mv #{Dir.pwd}/lib/mappings/lubrication.csv #{oldfile}`
+  `mv #{params['lubrication_file']['tempfile'].path} #{oldfile}`
   `mv #{params['lubrication_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/lubrication.csv`
   if parse_mapping
     "ok" 
@@ -198,6 +246,7 @@ def unparse pa
   end
   [re.join("&"),lube].to_json
 end
+
 
 =begin
 def parse_log log

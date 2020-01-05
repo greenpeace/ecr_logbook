@@ -1,0 +1,98 @@
+-content_for :head_end do
+  %link{:href => "/css/c3.min.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
+  :css
+    .badge {
+      margin: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: .4s;
+    }
+    .badge.on {
+      background-color: #b71c1c !important;
+    }
+    .badge.off {
+      background-color: #009688 !important;
+    }
+    .badge.on:hover {
+      background-color: #650808 !important;
+      transition: .2s;
+    }
+    .badge.off:hover {
+      background-color: #00695c !important;
+      transition: .2s;
+    }
+
+
+
+
+%section#dash
+  .card
+    .card-conntent
+      #chart
+
+  %ul.collapsible
+    -$mapping.each do |k,v|
+      %li
+        .collapsible-header.teal.white-text
+          %i.material-icons chevron_right
+          %b= k
+        .collapsible-body.room.white
+          %table
+            %tbody
+              -v.each do |kk,vv|
+                %tr
+                  %td
+                    %b=kk
+                  %td
+                    -vv.each do |kkk,vvv|
+                      -p vvv
+                      %span.badge.white-text.off{"data-id"=>vvv["mid"]}= kkk
+
+
+
+
+
+
+
+-content_for :body_end do
+  %script{:src => "/js/d3.v5.min.js?#{rand(1024)}", :type=>"text/javascript"}
+  %script{:src => "/js/c3.min.js?#{rand(1024)}", :type=>"text/javascript"}
+  :javascript
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+
+      var chart, dates;
+      $.post("/chart",{id:-1},function(cols){
+        dates = JSON.parse(cols)[0];
+        chart = c3.generate({
+            bindto: '#chart',
+            data: {
+              x: 'x',
+              columns: [dates]
+            },
+            line: { connect_null: false },
+            axis : { x : { type : 'timeseries', tick: { format: "%d/%m/%Y" } } } 
+        });
+      });
+
+      $(".badge").on("click",function() {
+        if ($(this).hasClass("on")) {
+          $(this).addClass("off").removeClass("on")
+          chart.unload({
+            ids: [$(this).text()]
+          });
+        } else {
+          $(this).addClass("on").removeClass("off")
+          $.post("/chart",{id:$(this).data("id")},function(cols){
+            cols = JSON.parse(cols);
+            cols.push(dates);
+            console.log(cols)
+            chart.load({
+              x: 'x',
+              columns: cols
+            });
+          });
+        }
+      })
+
+    });
