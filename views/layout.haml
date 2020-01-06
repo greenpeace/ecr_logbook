@@ -44,7 +44,7 @@
               %ul.collapsible.collapsible-accordion
                 -$mapping.each do |room,systems|
                   %li.bold
-                    %a.collapsible-header-.waves-effect.waves-teal{"data-href"=>room.slug}
+                    %a.collapsible-header.waves-effect.waves-teal{"data-href"=>room.slug}
                       =room
                       %i.material-icons.prefix.teal-text.yes{:style=>"margin-right:12px;display:none;"} check_circle
                       %i.material-icons.prefix.grey-text.maybe{:style=>"margin-right:12px;"} chevron_right
@@ -62,7 +62,10 @@
                 %li
                   .divider
                 %li.bold
-                  %a.navlink.waves-effect.waves-teal{:href=>"/admin","data-href"=>"admin","data-target"=>"admin",:style=>"padding-left:52px;"} ADMIN
+                  %a.navlink.waves-effect.waves-teal{:href=>"/dash","data-href"=>"dash","data-target"=>"dash",:style=>"padding-left:52px;"} DASHBOARD
+                -if access
+                  %li.bold
+                    %a.navlink.waves-effect.waves-teal{:href=>"/admin","data-href"=>"admin","data-target"=>"admin",:style=>"padding-left:52px;"} ADMIN
           %a.sidenav-trigger{"data-target" => "nav-mobile", :href => "#", :style=>"margin: 0 -2px;"}
             %i.material-icons menu
 
