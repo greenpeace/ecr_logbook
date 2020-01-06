@@ -23,11 +23,11 @@ get "/dash/?" do
 end
 
 post "/chart/?" do 
-  pp params
   parse_csv(params["id"]).to_json
 end
 
 post "/log/?" do 
+  #pp params
   begin 
     date = Date.strptime(params["date"],"%Y-%m-%d")
   rescue
@@ -98,7 +98,7 @@ end
 post "/update_layout/?" do 
   pass unless access
   oldfile = "#{Dir.pwd}/lib/layouts/old/layout_#{Time.now.strftime("%y%m%d%H%M%S")}.xlsx"
-  `mv #{params['layout_file']['tempfile'].path} #{oldfile}`
+  `cp #{params['layout_file']['tempfile'].path} #{oldfile}`
   `mv #{params['layout_file']['tempfile'].path} #{Dir.pwd}/lib/layouts/layout.xlsx`
   "ok" 
 end
@@ -118,7 +118,7 @@ end
 post "/update_mapping/?" do 
   pass unless access
   oldfile = "#{Dir.pwd}/lib/mappings/old/mapping_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
-  `mv #{params['mapping_file']['tempfile'].path} #{oldfile}`
+  `cp #{params['mapping_file']['tempfile'].path} #{oldfile}`
   `mv #{params['mapping_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/mapping.csv`
   e = parse_mapping
   if e == true
@@ -144,7 +144,7 @@ end
 post "/update_lubrication/?" do 
   pass unless access
   oldfile = "#{Dir.pwd}/lib/mappings/old/lubrication_#{Time.now.strftime("%y%m%d%H%M%S")}.csv"
-  `mv #{params['lubrication_file']['tempfile'].path} #{oldfile}`
+  `cp #{params['lubrication_file']['tempfile'].path} #{oldfile}`
   `mv #{params['lubrication_file']['tempfile'].path} #{Dir.pwd}/lib/mappings/lubrication.csv`
   if parse_mapping
     "ok" 
@@ -155,9 +155,9 @@ post "/update_lubrication/?" do
 end
 
 post "/edit_previous/?" do 
-  p params
+  #p params
   params["date"] = (Date.today-1).strftime("%Y-%m-%d") if params["date"] == "yesterday" or not params.has_key?("date")
-  p params
+  #p params
   file = "#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"
   if File.exists? file
     unparse JSON.parse(File.read(file))
@@ -211,7 +211,7 @@ def parse pa
     elsif me == "is-currently-working" and v == "on"
       on[ro] << sy
     else
-      p [ro,sy,me,$mapping_slug[ro][sy][me]["mid"].to_i]
+      #p [ro,sy,me,$mapping_slug[ro][sy][me]["mid"].to_i]
       re[ro] = {} unless re.has_key?(ro)
       re[ro][sy] = {} unless re[ro].has_key?(sy)
       re[ro][sy][me] = v

@@ -1,5 +1,5 @@
 -content_for :head_end do
-  %link{:href => "/css/c3.min.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
+  %link{:href => "/css/c3-eb4b9be8.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
   :css
     .badge {
       margin: 4px 6px;
@@ -21,6 +21,9 @@
       background-color: #00695c !important;
       transition: .2s;
     }
+    #chart {
+      height: 320px;
+    }
 
 
 
@@ -29,7 +32,6 @@
   .card
     .card-conntent
       #chart
-
   %ul.collapsible
     -$mapping.each do |k,v|
       %li
@@ -45,7 +47,6 @@
                     %b=kk
                   %td
                     -vv.each do |kkk,vvv|
-                      -p vvv
                       %span.badge.white-text.off{"data-id"=>vvv["mid"]}= kkk
 
 
@@ -55,15 +56,16 @@
 
 
 -content_for :body_end do
-  %script{:src => "/js/d3.v5.min.js?#{rand(1024)}", :type=>"text/javascript"}
-  %script{:src => "/js/c3.min.js?#{rand(1024)}", :type=>"text/javascript"}
+  %script{:src => "/js/d3-5.8.2.min-c5268e33.js?#{rand(1024)}", :type=>"text/javascript"}
+  %script{:src => "/js/c3.min-c0990868.js?#{rand(1024)}", :type=>"text/javascript"}
   :javascript
+    var chart, dates, zoom_to;
     $(document).ready(function(){
       $('.collapsible').collapsible();
 
-      var chart, dates;
       $.post("/chart",{id:-1},function(cols){
         dates = JSON.parse(cols)[0];
+        zoom_to = JSON.parse(cols)[1];
         chart = c3.generate({
             bindto: '#chart',
             data: {
@@ -71,7 +73,10 @@
               columns: [dates]
             },
             line: { connect_null: false },
-            axis : { x : { type : 'timeseries', tick: { format: "%d/%m/%Y" } } } 
+            axis : { x : { type : 'timeseries', tick: { format: "%d/%m/%Y" } }, grid: {show: true} } ,
+            zoom: { enabled: true, onzoomend: function (domain) {
+              console.log(this)
+            }, rescale: true },
         });
       });
 
@@ -89,7 +94,10 @@
             console.log(cols)
             chart.load({
               x: 'x',
-              columns: cols
+              columns: cols,
+              done: function(){
+                //chart.zoom(zoom_to);
+              }
             });
           });
         }
