@@ -11,8 +11,8 @@
             .row
               .col.s8.m10
                 .input-field
-                  %input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@enabledDates.sort.last,:placeholder=>"Pick a date here"}
-                  -#%input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
+                  -#%input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@enabledDates.sort.last,:placeholder=>"Pick a date here"}
+                  %input#date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
                   %label{:for=>"date"} Date
               .col.s4.m2
                 .input-field
@@ -30,8 +30,9 @@
             .row
               .col.s8.m10
                 .input-field
-                  %input#edit_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@enabledDates.sort.last,:placeholder=>"Pick a date here"}
-                  -#%input#edit_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
+                  -p @enabledDates.uniq.sort.last
+                  -#%input#edit_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@enabledDates.sort.last,:placeholder=>"Pick a date here"}
+                  %input#edit_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
                   %label{:for=>"edit_date"} Date
               .col.s4.m2
                 .input-field
@@ -49,8 +50,8 @@
                 .col.s8.m10
                   .input-field
                     -p @layoutDates.uniq.sort.last
-                    %input#layout_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@layoutDates.uniq.sort.last,:placeholder=>"Pick a date here"}
-                    -#%input#layout_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
+                    -#%input#layout_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@layoutDates.uniq.sort.last,:placeholder=>"Pick a date here"}
+                    %input#layout_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
                     %label{:for=>"layout_date"} Download old layout
                 .col.s4.m2
                   .input-field
@@ -81,8 +82,8 @@
                 .col.s8.m10
                   .input-field
                     -p @mappingDates.uniq.sort.last
-                    %input#mapping_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@mappingDates.uniq.sort.last,:placeholder=>"Pick a date here"}
-                    -#%input#mapping_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
+                    -#%input#mapping_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@mappingDates.uniq.sort.last,:placeholder=>"Pick a date here"}
+                    %input#mapping_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
                     %label{:for=>"mapping_date"} Download old mapping
                 .col.s4.m2
                   .input-field
@@ -109,11 +110,11 @@
                 %span.card-title Lubrication info
             %form.download#plube{:method=>"post",:action=>"/download_lube"}
               .row
-                .col.s8.m10
+                .col.s8.m10layout
                   .input-field
                     -p @lubeDates.uniq.sort.last
-                    %input#lube_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@lubeDates.uniq.sort.last,:placeholder=>"Pick a date here"}
-                    -#%input#lube_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
+                    -#%input#lube_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:value=>@lubeDates.uniq.sort.last,:placeholder=>"Pick a date here"}
+                    %input#lube_date.datepicker.ex{:validate=>true,:required=>true,:name=>"date",:type=>"text",:placeholder=>"Pick a date here"}
                     %label{:for=>"lube_date"} Download old lubrication info
                 .col.s4.m2
                   .input-field
@@ -242,7 +243,6 @@
 
     $("#layout_date").datepicker( {
       format: 'yyyy-mm-dd',
-      defaultDate: "#{@layoutDates.sort.last}",
       setDefaultDate: true,
       disableDayFn: function(date) {
         var dateParsed = date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate());
@@ -254,7 +254,7 @@
       format: 'yyyy-mm-dd',
       disableDayFn: function(date) {
         var dateParsed = date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate());
-        return mappingDates.indexOf(dateParsed) == -1 
+        return mappingDates.indexOf(dateParsed) == -1
       }
     });
 
@@ -265,3 +265,26 @@
         return lubeDates.indexOf(dateParsed) == -1 
       }
     });
+
+    function setVals(){
+      $("#date,#edit_date").val("#{@enabledDates.sort.last}");
+      $("#layout_date").val("#{@layoutDates.sort.last}");
+      $("#mapping_date").val("#{@mappingDates.sort.last}");
+      $("#lube_date").val("#{@lubeDates.sort.last}");
+      date = new Date("#{@enabledDates.sort.last}");
+      date = (date.getTimezoneOffset() > 0) ? new Date(date.getTime()+86400000) : date;
+      $("#date,#edit_date").datepicker("setDate",date);
+      date = new Date("#{@layoutDates.sort.last}");
+      date = (date.getTimezoneOffset() > 0) ? new Date(date.getTime()+86400000) : date;
+      $("#layout_date").datepicker("setDate",date);
+      date = new Date("#{@mappingDates.sort.last}");
+      date = (date.getTimezoneOffset() > 0) ? new Date(date.getTime()+86400000) : date;
+      $("#mapping_date").datepicker("setDate",date);
+      date = new Date("#{@lubeDates.sort.last}");
+      date = (date.getTimezoneOffset() > 0) ? new Date(date.getTime()+86400000) : date;
+      $("#lube_date").datepicker("setDate",date);
+    }
+
+    $(document).ready(function(){
+      window.setTimeout(setVals,1);
+    })
