@@ -43,7 +43,10 @@
                   -if specs.has_key? "data" 
                     -if specs["unit"] == "enum"
                       -dirt = [nil,nil,"dev"]
-                    -else
+                    -elsif specs["unit"] == "binary"
+                      -dirt = [nil,nil,"sw"]
+                    -elsif specs["unit"] != "scale"
+                      -puts specs["unit"]
                       -dirt = ["display:none;",specs["data"],"devhide "+specs["data"].slug]
                       -measurement = measurement.sub(/^#{specs["data"]}\s+/,"")
                   -elsif specs["unit"] == "binary"
@@ -72,14 +75,15 @@
                     -elsif specs["unit"] == "binary"
                       %i.material-icons.prefix.grey-text.maybe check
                       %i.material-icons.prefix.teal-text.yes check
-                      %input.checkhide{:type=>"hidden", :name=>id, :value=>"off"}
+                      %input.checkhide{:type=>"hidden", :name=>id, :value=>(specs.has_key?("data") ? specs["data"].split("|")[1] : "off")} 
+                      -#, "data-on"=>(specs.has_key?("data") ? specs["data"].split("|")[0] : "on"), "data-off"=>(specs.has_key?("data") ? specs["data"].split("|")[1] : "off")
                       -#%i.material-icons.prefix.red-text.text-darken-4.no close
                       .clearfix
                         .left
                           %label{:for=>id}= measurement
                         .switch.right
                           %label
-                            %input.check{:type=>"checkbox", :name=>id}
+                            %input.check{:type=>"checkbox", :name=>id, :value=>(specs.has_key?("data") ? specs["data"].split("|")[0] : "on")}
                             %span.lever
 
                     -elsif specs["unit"] == "trinary"
@@ -108,7 +112,7 @@
                       %br/
                       %br/
                       .relative.range
-                        %input.scale.valid{:type=>"range", :name=>id, :id=>id, :step=>"0.1", :min=>(specs.has_key?("min") ? specs["min"] : 0), :max=>(specs.has_key?("max") ? specs["max"] : 10), :value=>0}
+                        %input.scale.valid{:type=>"range", :name=>id, :id=>id, :step=>(specs.has_key?("data") ? specs["data"] : 1), :min=>(specs.has_key?("min") ? specs["min"] : 0), :max=>(specs.has_key?("max") ? specs["max"] : 10), :value=>0}
 
                     -else
                       %i.material-icons.prefix.grey-text.maybe chevron_right
