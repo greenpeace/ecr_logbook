@@ -46,7 +46,6 @@
                     -elsif specs["unit"] == "binary"
                       -dirt = [nil,nil,"sw"]
                     -elsif specs["unit"] != "scale"
-                      -puts specs["unit"]
                       -dirt = ["display:none;",specs["data"],"devhide "+specs["data"].slug]
                       -measurement = measurement.sub(/^#{specs["data"]}\s+/,"")
                   -elsif specs["unit"] == "binary"
@@ -151,6 +150,12 @@
                       %th &nbsp;
                   %tbody
                     
+        .col.s12.m8.offset-m2
+          .card.notes
+            .card-content
+              .input-field
+                %textarea.materialize-textarea{:name=>"notes[#{room.slug}]"}
+                %label{:for=>"notes[#{room.slug}]"}= "#{room} Notes"
       .row
         .col.s12.foot-arrows
           %br/
@@ -207,7 +212,7 @@
                   %label{:for=>"to_port"} To
               .col.s12
                 .input-field
-                  %textarea.materialize-textarea{:name=>"notes"}
+                  %textarea.materialize-textarea{:name=>"notes[submit]"}
                   %label{:for=>"notes"} Notes
 
               .col.s2.m1.foot-arrows

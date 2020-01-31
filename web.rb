@@ -27,12 +27,16 @@ post "/chart/?" do
 end
 
 post "/log/?" do 
-  #pp params
+  pp params
   begin 
     date = Date.strptime(params["date"],"%Y-%m-%d")
   rescue
     date = Date.strptime(params["date"],"%b %d, %Y")
   end
+  notes = params.delete("notes")
+  note = ""
+  notes.each {|k,v| if v.length > 0 then note += "#{k}: #{v}\n" end}
+  params["notes"] = note
   File.open("#{Dir.pwd}/public/output/#{date.strftime("%Y%m%d")}-engine_log.json","w") do |file|
     file << JSON.pretty_generate(parse params) #.gsub(/\n/,"<br/>").gsub(/\s/,"&nbsp; ")
   end
@@ -229,6 +233,7 @@ end
 def unparse pa
   re = []
   lube = []
+  notes = {}
   pa.each do |room,sys|
     if room == "lube"
       sys.each_with_index do |lub,ind|
@@ -244,7 +249,7 @@ def unparse pa
       re << "#{room}=#{sys}"
     end
   end
-  [re.join("&"),lube].to_json
+  [re.join("&"),lube,notes].to_json
 end
 
 

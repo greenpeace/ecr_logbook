@@ -97,17 +97,18 @@ def output srcfile
   wb = RubyXL::Parser.parse("#{Dir.pwd}/lib/layouts/layout.xlsx")
   ws = wb.worksheets[0]
 
+
   w,h = ws[-1][-1].row, ws[-1][-1].column
 
-  (w+1).times do |row|
-    (h+1).times do |col|
-      if ws[row][col] and ws[row][col].datatype == 's' and ws[row][col].value.match(/^\$/)
-        val = ws[row][col].value
+  ws.each_with_index do |r,row|
+    r && r.cells.each_with_index do |cell, col|
+      if cell and cell.datatype == 's' and cell.value.match(/^\$/)
+        val = cell.value
         if val.match("|")[0].length > 0
           val.split("|").each do |v|
             ref[v] = [row,col]
           end
-          ws[row][col].change_contents("-")
+          cell.change_contents("-")
         elsif val.match(/^\$l.$/)
           lube["rows"] << row unless lube["rows"].include? row
           if val.match(/^\$lu$/)
@@ -117,15 +118,20 @@ def output srcfile
           elsif val.match(/^\$la$/)
             lube["amount"] = col
           end
-          ws[row][col].change_contents("")
+          cell.change_contents("")
         elsif val.match(/^\$y\d+$/)
           yef[val] = [row,col]
-          ws[row][col].change_contents("-")
+          cell.change_contents("-")
+        elsif val.match(/^\$notes$/)
+          ref[val] = [row,col]
+          cell.change_contents("-")
+          cell.text_wrap
         else
           ref[val] = [row,col]
-          ws[row][col].change_contents("-")
+          cell.change_contents("-")
         end
       end
+      print("\r#{row},#{col}")
     end
   end
 
