@@ -2,3 +2,4 @@ public/output/*
 lib/mappings/*
 lib/layouts/*
 **/.~*
+Gemfile.lock
