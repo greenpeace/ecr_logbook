@@ -1,5 +1,6 @@
 public/output/*
 lib/mappings/*
 lib/layouts/*
+lib/.sass-cache
 **/.~*
 Gemfile.lock

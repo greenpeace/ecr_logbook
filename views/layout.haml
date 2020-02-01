@@ -7,7 +7,6 @@
     / CSS
     %link{:href => "/fonts/Material-Icons/material-icons.css", :rel => "stylesheet"}/
     %link{:href => "/css/main.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
-    %link{:href => "/css/style.css?#{rand(1024)}", :media => "screen,projection", :rel => "stylesheet", :type => "text/css"}/
     %link{:rel=>"apple-touch-icon-precomposed",:href=>"/img/apple-touch-icon-152x152-precomposed.png"}
     =yield_content :head_end
     <!--[if lt IE 9]>
@@ -19,11 +18,9 @@
       %nav.teal{:role => "navigation"}
         .nav-wrapper.container
           %a#logo-container.brand-logo{:href => "/"}
-            %span.hide-on-med-and-down Engine Room Daylog &nbsp;
+            %span.hide-on-med-and-down Engine Room Logbook &nbsp;
             %small.title
           %ul.right.hide-on-med-and-down
-            %li.bold
-              %a{:href=>"/dash","data-target"=>"dash"} DASHBOARD
             -if access
               %li.bold
                 %a{:href=>"/admin","data-target"=>"admin"} ADMIN
@@ -35,10 +32,16 @@
                     %a.navlink.waves-effect.waves-teal.tab{"data-href"=>room.slug,:href=>"/##{room.slug}"}=room
                 %li
                   %a.navlink.waves-effect.waves-teal.tab{"data-href"=>"submit",:href=>"/#submit"} Submit
+            %li
+              %a{:href=>"/dash","data-target"=>"dash",:title=>"DASHBOARD"}
+                %i.material-icons insert_chart
+            %li
+              %a{:href=>"/help","data-target"=>"help",:title=>"HELP"}
+                %i.material-icons help
           %ul#nav-mobile.sidenav
             %li
               .teal.white-text{:style=>"padding:0 16px;"}
-                ER daylog /
+                ER logbook /
                 %span.today= Date.today.strftime('%a, %b %d')
             %li.no-padding
               %ul.collapsible.collapsible-accordion

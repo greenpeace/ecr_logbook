@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'sinatra/content_for'
 require 'unidecoder'
+require 'redcarpet'
 require 'json'
 require 'haml'
 require 'csv'
@@ -13,6 +14,7 @@ $session = nil
 $mapping = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping.json"))
 $mapping_slug = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/mapping_slug.json"))
 $lubrication = JSON.parse(File.read("#{Dir.pwd}/lib/mappings/lubrication.json"))
+$markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 
 get "/?" do 
   haml :index
@@ -20,6 +22,11 @@ end
 
 get "/dash/?" do 
   haml :dash
+end
+
+get "/help/?" do 
+  @body = $markdown.render(File.read("#{Dir.pwd}/README.md"))
+  haml :plain
 end
 
 post "/chart/?" do 
