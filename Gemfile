@@ -4,6 +4,7 @@ gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'unidecoder'
 gem 'redcarpet'
+gem 'colorize'
 gem 'rubyXL'
 
 
