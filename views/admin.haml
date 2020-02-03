@@ -189,6 +189,7 @@
             M.toast({html: '<b>Error</b>',classes:"red darken-4"})
           } else {
             data = JSON.parse(data);
+            console.log(data)
             localStorage.clear();
             $.each(data[1],function(i,e){
               addLube(e[0],e[1])

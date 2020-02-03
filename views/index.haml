@@ -43,12 +43,12 @@
                   -if specs.has_key? "data" 
                     -if specs["unit"] == "enum"
                       -dirt = [nil,nil,"dev"]
-                    -elsif specs["unit"] == "binary"
+                    -elsif ["binary","trinary"].include?(specs["unit"])
                       -dirt = [nil,nil,"sw"]
                     -elsif specs["unit"] != "scale"
                       -dirt = ["display:none;",specs["data"],"devhide "+specs["data"].slug]
                       -measurement = measurement.sub(/^#{specs["data"]}\s+/,"")
-                  -elsif specs["unit"] == "binary"
+                  -elsif ["binary","trinary"].include?(specs["unit"])
                     -dirt = [nil,nil,"sw"]
                   -if specs["port"] == 0
                     -d = dirt[2].split(/\s+/)
@@ -74,15 +74,16 @@
                     -elsif specs["unit"] == "binary"
                       %i.material-icons.prefix.grey-text.maybe check
                       %i.material-icons.prefix.teal-text.yes check
-                      %input.checkhide{:type=>"hidden", :name=>id, :value=>(specs.has_key?("data") ? specs["data"].split("|")[1] : "off")} 
+                      %input.checkhide{:type=>"hidden", :name=>id, :value=>"no"} 
                       -#, "data-on"=>(specs.has_key?("data") ? specs["data"].split("|")[0] : "on"), "data-off"=>(specs.has_key?("data") ? specs["data"].split("|")[1] : "off")
                       -#%i.material-icons.prefix.red-text.text-darken-4.no close
                       .clearfix
                         .left
-                          %label{:for=>id}= measurement
+                          -#%label{:for=>id}= measurement
+                          %p{:style=>"text-indent:44px;"}= measurement
                         .switch.right
                           %label
-                            %input.check{:type=>"checkbox", :name=>id, :value=>(specs.has_key?("data") ? specs["data"].split("|")[0] : "on")}
+                            %input.check{:type=>"checkbox", :name=>id, :value=>"yes"}
                             %span.lever
 
                     -elsif specs["unit"] == "trinary"
@@ -95,13 +96,13 @@
                         .radios.right
                           %label
                             %input{:type=>"radio",:name=>id,:id=>"#{id}_L",:value=>"L",:validate=>true}
-                            %span L
+                            %span= specs.has_key?("data") ? specs["data"].split("|")[0] : "L"
                           %label
                             %input{:type=>"radio",:name=>id,:id=>"#{id}_M",:value=>"M",:validate=>true}
-                            %span M
+                            %span= specs.has_key?("data") ? specs["data"].split("|")[1] : "M"
                           %label
                             %input{:type=>"radio",:name=>id,:id=>"#{id}_H",:value=>"H",:validate=>true}
-                            %span H
+                            %span= specs.has_key?("data") ? specs["data"].split("|")[2] : "H"
 
                     -elsif specs["unit"] == "scale"
                       %i.material-icons.prefix.grey-text.range-valid.maybe check

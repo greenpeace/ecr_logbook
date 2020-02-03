@@ -196,14 +196,15 @@ which include:
   for it will be replaced with the corresponding number on the dropdown box.
 <br/><br/>
 
-- **binary:** Indicates a switch input, default valus are "on" and "off".
+- **binary:** Indicates a switch input, default values are "yes" and "no".
   Again, a pipe-delimited value can be entered to the Data column to change the
-  values, like "yes|no".
+  values, like "on|off".
 <br/><br/>
 
 - **trinary:** A three-option checkbox for indicating L,M,H (Low, Medium, High) 
-  values mainly for vaguely readable level and temperature gauges. Does not yet
-  utilize the Data column for alternative values.
+  values mainly for vaguely readable level and temperature gauges.
+  To change default values, please enter a pipe-delimited value on the Data
+  column, like "no|maybe|yes".
 
 The rest of the units are arbitrary, yet there is a hard-coded setting to make
 some of them more precise. Normally all the units have a precision of 0.1, but

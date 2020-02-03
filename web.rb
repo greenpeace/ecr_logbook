@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/content_for'
 require 'unidecoder'
 require 'redcarpet'
+require 'colorize'
 require 'json'
 require 'haml'
 require 'csv'
@@ -34,7 +35,6 @@ post "/chart/?" do
 end
 
 post "/log/?" do 
-  pp params
   begin 
     date = Date.strptime(params["date"],"%Y-%m-%d")
   rescue
@@ -227,6 +227,16 @@ def parse pa
       re[ro][sy] = {} unless re[ro].has_key?(sy)
       re[ro][sy][me] = v
       row[$mapping_slug[ro][sy][me]["mid"].to_i] = v if me
+    end
+  end
+  re.each do |ro,sys|
+    if sys.is_a?(Hash)
+      sys.each do |sy,mea|
+        if (mea.values-["no"]).empty?
+          sys.delete(sy)
+        end
+      end
+      re.delete(ro) if sys.empty?
     end
   end
   row.unshift pa["date"]

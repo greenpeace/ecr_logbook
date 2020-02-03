@@ -1,6 +1,7 @@
 var lubeTokens = []
 
 function init(element) {
+  console.log(element)
   element = element.replace(/^\//,"")
   if(typeof element == "undefined" || element == "#" || element == "") element = "#main"
   //console.log(element)
@@ -245,7 +246,7 @@ function checkNumber(input,force) {
   $(input).prevAll("i.prefix").hide()
   if (input.validity.valid === true) {
     if ($(input).closest("section").attr("id") == "submit") {
-      console.log($(input).attr("name"))
+      //console.log($(input).attr("name"))
     }
     $(input).prevAll("i.prefix.yes").show()
     $(input).removeClass("invalid").addClass("valid")
@@ -378,7 +379,7 @@ function yesterday() {
     success:function(data){
       if (data == "{}") {
         M.toast({html: '<b>Could not load yesterday\'s values</b>',classes:"red darken-4"})
-        window.location = "/#steering-gear-room"
+        window.location = "/#update"
         init(window.location.hash);
       } else {
         data = JSON.parse(data);
@@ -433,7 +434,7 @@ function fillLocal() {
 }
 
 function fill(d) {
-  if (d[1] == "on") {
+  if (["on","yes","done"].indexOf(d[1]) >= 0) {
     input = $("input[name="+d[0]+"]");
     input.prop("checked",true)
     empty = false;

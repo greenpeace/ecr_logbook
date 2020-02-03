@@ -131,13 +131,12 @@ def output srcfile
           cell.change_contents("-")
         end
       end
-      print("\r#{row},#{col}")
     end
   end
 
 
-  puts srcfile
   src = JSON.parse(File.read(srcfile))
+  print(JSON.pretty_generate(src).cyan)
   yday = Date.parse(srcfile.split("/")[-1].split("-")[0], "%Y%m%d") - 1
   yfile = srcfile.sub(/\d{8}/,yday.strftime("%Y%m%d"))
   ysrc = nil
@@ -162,14 +161,21 @@ def output srcfile
             mes = $mapping_slug[room][system][measurement]
             mid = "$#{mes["mid"]}"
             r,c = *ref[mid]
+            next unless r or c
             if mes["unit"] == "enum" and mes["data"] and mes["data"] != ""
-              sel = value.slug
-            elsif mes["unit"] != "enum" and mes["data"] and mes["data"].slug != sel
+              sel = value
+            elsif mes["unit"] != "enum" and mes["data"] and mes["data"].slug != sel and false
+              puts "skipped (#{r},#{c}) => #{mid} - #{room} / #{system} / #{measurement} = #{value} (#{})".yellow
               next
+            elsif mes["unit"] == "binary" and mes["data"] and mes["data"].split("|").length == 2
+              value = (value == "yes" ? mes["data"].split("|")[0] : mes["data"].split("|")[1])
+            elsif mes["unit"] == "trinary" and mes["data"] and mes["data"].split("|").length == 3
+              value = (value == "L" ? mes["data"].split("|")[0] : (value == "M" ? mes["data"].split("|")[1] : mes["data"].split("|")[2]))
             end
+            puts "changed (#{r},#{c}) => #{mid} - #{room} / #{system} / #{measurement} = #{value}".green
             ws[r][c].change_contents(value) #if value and value != ""
           rescue => e
-            #puts "error (#{e}) => #{mid} - #{room} / #{system} / #{measurement}" 
+            puts "error (#{e}) => #{mid} - #{room} / #{system} / #{measurement}".red
           end
         end
       end
@@ -227,7 +233,7 @@ def parse_mapping
       data[row[1]] = {} unless data.has_key? row[1]
       data[row[1]][row[2]] = {} unless data[row[1]].has_key? row[2]
       meas = row[3]
-      meas = "#{row[9]} #{row[3]}" if row[9] and row[9].length > 0 and not ["enum","binary","scale"].include?(row[4])
+      meas = "#{row[9]} #{row[3]}" if row[9] and row[9].length > 0 and not ["enum","binary","trinary","scale"].include?(row[4])
       #p ind,row if data[row[1]][row[2]].has_key? meas
       data[row[1]][row[2]][meas] = { "unit" => unit_sign(row[4]) }
       data[row[1]][row[2]][meas]["min"] = row[5] if row[5] and row[5].length > 0
@@ -241,7 +247,7 @@ def parse_mapping
       data_slug[row[1].slug] = {} unless data_slug.has_key? row[1].slug
       data_slug[row[1].slug][row[2].slug] = {} unless data_slug[row[1].slug].has_key? row[2].slug
       meas = row[3].slug
-      meas = "#{row[9].slug}-#{row[3].slug}" if row[9] and row[9].length > 0 and not ["enum","binary","scale"].include?(row[4])
+      meas = "#{row[9].slug}-#{row[3].slug}" if row[9] and row[9].length > 0 and not ["enum","binary","trinary","scale"].include?(row[4])
       #p ind,row if data_slug[row[1].slug][row[2].slug].has_key? meas
       data_slug[row[1].slug][row[2].slug][meas] = { "unit" => row[4] }
       data_slug[row[1].slug][row[2].slug][meas]["min"] = row[5] if row[5] and row[5].length > 0
