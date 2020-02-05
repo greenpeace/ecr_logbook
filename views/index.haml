@@ -43,7 +43,9 @@
                   -if specs.has_key? "data" 
                     -if specs["unit"] == "enum"
                       -dirt = [nil,nil,"dev"]
-                    -elsif ["binary","trinary"].include?(specs["unit"])
+                    -elsif specs["unit"] == "binary" and specs["data"].split("|").length == 2
+                      -dirt = [nil,nil,"sw"]
+                    -elsif specs["unit"] == "trinary" and specs["data"].split("|").length == 3
                       -dirt = [nil,nil,"sw"]
                     -elsif specs["unit"] != "scale"
                       -dirt = ["display:none;",specs["data"],"devhide "+specs["data"].slug]
@@ -94,15 +96,17 @@
                           %i.material-icons.prefix.teal-text.yes check
                           %label.fix= measurement
                         .radios.right
+                          - custom = (specs.has_key?("data") and specs["data"].split("|").length == 3)
+                          -puts [dirt,measurement,specs,custom,specs["data"].split("|").length == 3].to_json.yellow if system.slug == "generator"
                           %label
                             %input{:type=>"radio",:name=>id,:id=>"#{id}_L",:value=>"L",:validate=>true}
-                            %span= specs.has_key?("data") ? specs["data"].split("|")[0] : "L"
+                            %span= custom ? specs["data"].split("|")[0] : "L"
                           %label
                             %input{:type=>"radio",:name=>id,:id=>"#{id}_M",:value=>"M",:validate=>true}
-                            %span= specs.has_key?("data") ? specs["data"].split("|")[1] : "M"
+                            %span= custom ? specs["data"].split("|")[1] : "M"
                           %label
                             %input{:type=>"radio",:name=>id,:id=>"#{id}_H",:value=>"H",:validate=>true}
-                            %span= specs.has_key?("data") ? specs["data"].split("|")[2] : "H"
+                            %span= custom ? specs["data"].split("|")[2] : "H"
 
                     -elsif specs["unit"] == "scale"
                       %i.material-icons.prefix.grey-text.range-valid.maybe check

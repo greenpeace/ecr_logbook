@@ -226,6 +226,8 @@ def parse pa
       re[ro] = {} unless re.has_key?(ro)
       re[ro][sy] = {} unless re[ro].has_key?(sy)
       re[ro][sy][me] = v
+      p $mapping_slug[ro][sy].keys if sy == "generator"
+      puts me
       row[$mapping_slug[ro][sy][me]["mid"].to_i] = v if me
     end
   end

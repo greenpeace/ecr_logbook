@@ -443,7 +443,7 @@ function fill(d) {
     input = $("select[name="+d[0]+"]");
     input.formSelect();
     if ($("select[name="+d[0]+"]").closest(".input-field").hasClass("dev")) {
-      //console.log($("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()));
+      console.log($("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()));
       $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide").slideUp();
       $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide input").prop("required", false);
       $("select[name="+d[0]+"]").closest(".dev").nextAll(".input-field.devhide."+$("select[name="+d[0]+"]").find("option:selected").val()).slideDown();
@@ -456,11 +456,15 @@ function fill(d) {
     addLube(room, [{name:"unit",value:data[0]},{name:"oil_type",value:data[1]},{name:"amount",value:data[2]}],token);
   } else {
     //console.log(d)
-    input = $("input[name="+d[0]+"]");
+    input = $("input[name="+d[0]+"],select[name="+d[0]+"]");
     if (input.attr("type") == "radio") {
       $("input[name="+d[0]+"][value="+d[1]+"]").prop("checked",true)
     } else if (d[0] == "notes") {
       $("textarea[name=notes]").val(d[1])
+    } else if (input.prop("tagName") == "SELECT") {
+      input.find("option").prop("selected",false);
+      input.find("option[value="+d[1]+"]").prop("selected",true);
+      input.formSelect();
     } else {
       input.val(d[1])
     }
