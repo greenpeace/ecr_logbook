@@ -69,6 +69,7 @@ end
 
 get "/admin/?" do 
   @enabledDates = get_dates
+  @editDates = get_edit_dates
   @layoutDates = []
   @mappingDates = []
   @lubeDates = []
@@ -166,15 +167,29 @@ post "/update_lubrication/?" do
 end
 
 post "/edit_previous/?" do 
-  #p params
-  params["date"] = (Date.today-1).strftime("%Y-%m-%d") if params["date"] == "yesterday" or not params.has_key?("date")
-  #p params
-  file = "#{Dir.pwd}/public/output/#{params["date"].gsub("-","")}-engine_log.json"
-  if File.exists? file
-    unparse JSON.parse(File.read(file))
-  else
-    "{}"
+  data = get_edit_times(params["stamp"].to_i)
+  time = Time.at(params["stamp"].to_i)
+  date = "#{time.year}-#{time.month.to_s.rjust(2,"0")}-#{time.day.to_s.rjust(2,"0")}"
+  file = "#{Dir.pwd}/public/output/#{date.gsub("-","")}-engine_log.json"
+  json = {}
+  json["date"] = data[1]
+  json["user"] = data[2]
+  $mapping_slug.each do |room,sys|
+    json[room] = {} unless json.has_key?(room)
+    if sys.is_a? Hash
+      sys.each do |system, meas|
+        json[room][system] = {} unless json[room].has_key?(system)
+        meas.each do |measurement, value|
+          val = data[value["mid"].to_i + 2] 
+          json[room][system][measurement] = val if val
+        end
+        json[room].delete(system) unless json[room][system].any?
+      end
+    end
+    json.delete(room) unless json[room].any?
   end
+  p json
+  unparse json
 end
 
 get "/env/?" do

@@ -38,6 +38,9 @@
                 .input-field
                   %button.btn-large.btn-floating.waves-effect.waves-light.submit{:type=>"submit"}
                     %i.material-icons edit
+            .row
+              .col.s12
+                #edit-links
 
       -if access
         .card.layout#layout
@@ -223,6 +226,7 @@
       M.toast({html: '<b>Cleared current form.</b>',classes:"teal"})
     });
     var enabledDates = #{@enabledDates};
+    var editDates = #{@editDates.to_json};
     var layoutDates = #{@layoutDates.uniq};
     var mappingDates = #{@mappingDates.uniq};
     var lubeDates = #{@lubeDates.uniq};
@@ -240,7 +244,13 @@
       format: 'yyyy-mm-dd',
       disableDayFn: function(date) {
         var dateParsed = date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate());
-        return enabledDates.indexOf(dateParsed) == -1 
+        return Object.keys(editDates).indexOf(dateParsed) == -1 
+      },
+      onClose: function() {
+        $("#edit-links").html("")
+        $.each(editDates[$("#edit_date").val()],function(i,e){
+          $("#edit-links").append("<label><input name='stamp' class='filled-in' value='"+e[0]+"' type='radio'></input><span>"+e[1]+"</span></label> &nbsp; ")
+        })
       }
     });
 

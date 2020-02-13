@@ -370,3 +370,36 @@ def get_dates
   dates
 end
 
+def get_edit_dates
+  dates = {}
+  CSV.read("#{Dir.pwd}/public/output/engine_log.csv").each do |row|
+    begin
+      if row[0] and row[0].length > 0 and row[0].match(/^\d+$/)
+        time = Time.at(row[0].to_i)
+        date = "#{time.year}-#{time.month.to_s.rjust(2,"0")}-#{time.day.to_s.rjust(2,"0")}"
+        dates[date] = [] unless dates.has_key?(date)
+        dates[date] << [row[0].to_i,"#{time.hour.to_s.rjust(2,"0")}:#{time.min.to_s.rjust(2,"0")}:#{time.sec.to_s.rjust(2,"0")}"]
+      end
+    rescue
+      next
+    end
+  end
+  dates
+end
+
+def get_edit_times stamp
+  data = []
+  CSV.read("#{Dir.pwd}/public/output/engine_log.csv").each do |row|
+    begin
+      if row[0] and row[0].length > 0 and row[0].match(/^\d+$/)
+        next unless stamp == row[0].to_i
+        data = row
+        break
+      end
+    rescue
+      next
+    end
+  end
+  data
+end
+

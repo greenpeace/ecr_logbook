@@ -134,6 +134,7 @@ $("form#daylog button#anyway").off("click tap").on("click tap",function(e){
 })
 
 function submit() {
+  console.log("submitting")
   disabled = []
   $.each($("input[type=range]"),function(i,e){
     if ( $(e).val() == 0 && $(e).closest(".card-action").hasClass("off")) {
@@ -141,6 +142,7 @@ function submit() {
       $(e).prop("disabled",true);
     }
   })
+console.log(disabled)
   $.post("/log",$("form#daylog").serializeArray(),function(data){
     if (data == "ack") {
       localStorage.clear();
