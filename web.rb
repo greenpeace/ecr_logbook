@@ -188,7 +188,6 @@ post "/edit_previous/?" do
     end
     json.delete(room) unless json[room].any?
   end
-  p json
   unparse json
 end
 
