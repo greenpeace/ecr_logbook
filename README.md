@@ -71,9 +71,12 @@ with valid data are selectable.
 <br/><br/>
 
 - **Edit previous records:**
-Older data can be restored to the application using the date picker. The form
-can be cleared by clicking the "Clear current form" link, be warned though that
-all the information will be lost unless it was submitted to the server before.
+Older data can be restored to the application using the date picker. Once the
+date is set, radio buttons will appear indicating the times on that day when
+the measurements were sent to the server. Just select the desired one and click
+the edit button (pen icon). The form can be cleared by clicking the "Clear 
+current form" link, be warned though that all the information will be lost 
+unless it was submitted to the server before.
 <br/><br/>
 
 - **Layout:**
